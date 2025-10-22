@@ -1,0 +1,13 @@
+import java.util.HashMap;
+import java.util.Map;
+
+public class Test {
+
+	public static void main(String[] args) {
+		String str = "hi, my name is tom. nice to meet you";
+		
+		// 문자별 등장 횟수를 저장할 Map 객체
+		Map<Character, Integer> charCountMap = new HashMap<Character, Integer>();
+	}
+
+}
