@@ -15,77 +15,206 @@ public class Test {
 		 */
 		String str = "hi, my name is tom. nice to meet you";
 		
+		// =======================================================================
 		// 문자별 등장 횟수를 저장할 Map 객체
-		Map<Character, Integer> charCountMap = new HashMap<Character, Integer>();
-		
-		// 문자열을 char[] 타입으로 변환하여 반복
-//		for(char ch : str.toCharArray()) {
-//			// 공백 제외
-//			if(ch == ' ') continue;
-//				
-//			// 주어진 문자에 해당하는 키를 통해 값(등장 횟수)을 가져오는데
-//			// 해당 키에 대한 값이 없을 경우 null 대신 0 을 지정하기 위해 getOrDefault() 메서드 사용
-//			// => 가져온 값 + 1 처리
+//		Map<Character, Integer> charCountMap = new HashMap<Character, Integer>();
+//		
+//		// 문자열을 char[] 타입으로 변환하여 반복
+////		for(char ch : str.toCharArray()) {
+////			// 공백 제외
+////			if(ch == ' ') continue;
+////				
+////			// 주어진 문자에 해당하는 키를 통해 값(등장 횟수)을 가져오는데
+////			// 해당 키에 대한 값이 없을 경우 null 대신 0 을 지정하기 위해 getOrDefault() 메서드 사용
+////			// => 가져온 값 + 1 처리
+////			charCountMap.put(ch, charCountMap.getOrDefault(ch, 0) + 1);
+////		}
+//		
+//		// 반복문을 통해 매번 공백 문자를 판별하는 대신 반복 전에 미리 공백을 널스트링("") 으로 치환 후 반복 수행
+//		// => 복합 필터링 시에는 replaceAll() 메서드를 사용해도 되지만 오버헤드로 인한 시간 소요가 커짐
+//		// => 
+//		for(char ch : str.replace(" ", "").toCharArray()) {
 //			charCountMap.put(ch, charCountMap.getOrDefault(ch, 0) + 1);
 //		}
-		
-		// 반복문을 통해 매번 공백 문자를 판별하는 대신 반복 전에 미리 공백을 널스트링("") 으로 치환 후 반복 수행
-		// => 복합 필터링 시에는 replaceAll() 메서드를 사용해도 되지만 오버헤드로 인한 시간 소요가 커짐
-		// => 
-		for(char ch : str.replace(" ", "").toCharArray()) {
-			charCountMap.put(ch, charCountMap.getOrDefault(ch, 0) + 1);
-		}
-		
-		System.out.println(charCountMap);
-		// => {a=1, c=1, e=4, h=1, i=3, ,=1, m=4, n=2, .=1, o=3, s=1, t=3, u=1, y=2}
-		
-		// 최대 등장 횟수 찾기
-		// Map 객체 내에서 값(value)들의 모음을 추출하여 Collections.max() 메서드로 최대값 추출
-		int maxCount = Collections.max(charCountMap.values());
-		System.out.println("최대 등장 횟수 : " + maxCount);
-		
-		// 최대 등장 횟수에 해당하는 문자들을 탐색하여 List 타입으로 저장
-		// => 최대 등장 횟수는 이미 추출했으므로 Map 타입으로 생성할 필요 없음
-		List<Character> maxChars = new ArrayList<Character>();
-		
-		// 탐색 시 Map 객체의 keySet() 메서드로 key 목록만 추출하여 키에 대한 값을 비교하거나
-		// 아니면, key 와 value 를 묶음으로 갖는 Map.Entry 타입 객체를 entrySet() 메서드로 추출하여 값을 비교
-		for(Map.Entry<Character, Integer> entry : charCountMap.entrySet()) {
-			if(entry.getValue() == maxCount) { // 최대 등장 횟수가 같은지 비교
-				maxChars.add(entry.getKey()); // 최대 등장 횟수에 해당하는 문자를 리스트에 저장
-			}
-		}
-		
-		System.out.println("가장 많이 등장한 문자 : " + maxChars);
-		
-//		Collections.sort(maxChars);
-		for(char ch : maxChars) {
-			System.out.println(ch + " : " + maxCount);
-		}
+//		
+//		System.out.println(charCountMap);
+//		// => {a=1, c=1, e=4, h=1, i=3, ,=1, m=4, n=2, .=1, o=3, s=1, t=3, u=1, y=2}
+//		
+//		// 최대 등장 횟수 찾기
+//		// Map 객체 내에서 값(value)들의 모음을 추출하여 Collections.max() 메서드로 최대값 추출
+//		int maxCount = Collections.max(charCountMap.values());
+//		System.out.println("최대 등장 횟수 : " + maxCount);
+//		
+//		// 최대 등장 횟수에 해당하는 문자들을 탐색하여 List 타입으로 저장
+//		// => 최대 등장 횟수는 이미 추출했으므로 Map 타입으로 생성할 필요 없음
+//		List<Character> maxChars = new ArrayList<Character>();
+//		
+//		// 탐색 시 Map 객체의 keySet() 메서드로 key 목록만 추출하여 키에 대한 값을 비교하거나
+//		// 아니면, key 와 value 를 묶음으로 갖는 Map.Entry 타입 객체를 entrySet() 메서드로 추출하여 값을 비교
+//		for(Map.Entry<Character, Integer> entry : charCountMap.entrySet()) {
+//			if(entry.getValue() == maxCount) { // 최대 등장 횟수가 같은지 비교
+//				maxChars.add(entry.getKey()); // 최대 등장 횟수에 해당하는 문자를 리스트에 저장
+//			}
+//		}
+//		
+//		System.out.println("가장 많이 등장한 문자 : " + maxChars);
+//		
+////		Collections.sort(maxChars);
+//		for(char ch : maxChars) {
+//			System.out.println(ch + " : " + maxCount);
+//		}
 		
 		// ======================================================================================
 		// 다른 방법)
-		String str2 = str.replace(" ", "");
+//		String str2 = str.replace(" ", "");
+//		
+//		// 문자별 등장 횟수를 저장할 Map 객체
+//		Map<Character, Integer> charCountMap2 = new HashMap<Character, Integer>();
+//		
+//		// String 클래스의 charAt() 메서드를 통해 인덱스로 문자열에 접근할 경우 toCharArray() 메서드 보다 빠름
+//		for(int i = 0; i < str2.length(); i++) {
+//			char ch = str2.charAt(i);
+//			charCountMap2.put(ch, charCountMap2.getOrDefault(ch, 0) + 1);
+//		}
+//		
+//		System.out.println(charCountMap2);
+//		
+//		// Map 에서 key 에 해당하는 각 문자를 모아서 리스트로 변환
+//		List<Character> keyList = new ArrayList<>(charCountMap2.keySet());
+//				
+//		// 리스트 정렬 시 비교 대상에 해당하는 두 개의 문자를 파라미터로 받아
+//		// 두 문자에 대한 등장 횟수를 비교하여 등장 횟수가 많은 값이 앞쪽으로 위치하도록 정렬(위치 변경) = 내림차순
+//		// 만약, 두 문자에 대한 뺄셈 연산을 반대로 수행할 경우 오름차순 정렬
+//		keyList.sort((o1, o2) -> charCountMap2.get(o2) - charCountMap2.get(o1));
+//		System.out.println(keyList);
+//		
+////		List<Character> maxChars2 = new ArrayList<Character>();
+////		for(char ch : keyList) {
+////			if(charCountMap2.get(ch) == maxCount) {
+////				maxChars2.add(ch);
+////			}
+////		}
+//		
+//		// 자바 스트림을 활용하여 최대 등장 횟수에 해당하는 문자들을 필터링하여 리스트로 변환
+//		List<Character> maxChars2 = keyList.stream()
+//											.filter(ch -> charCountMap2.get(ch) == maxCount)
+//											.toList();
+//		
+//		for(char ch : maxChars2) {
+//			System.out.println(ch + " : " + maxCount);
+//		}
 		
-		// 문자별 등장 횟수를 저장할 Map 객체
-		Map<Character, Integer> charCountMap2 = new HashMap<Character, Integer>();
-		
-		// String 클래스의 charAt() 메서드를 통해 인덱스로 문자열에 접근할 경우 toCharArray() 메서드 보다 빠름
-		for(int i = 0; i < str2.length(); i++) {
-			char ch = str2.charAt(i);
-			charCountMap2.put(ch, charCountMap2.getOrDefault(ch, 0) + 1);
+		// =====================================================================================
+		// =====================================================================================
+		// 작업 소요 시간 측정
+		double startTime = System.currentTimeMillis();
+		// --------------------------------
+		for(int repeat = 1; repeat <= 10000000; repeat++) {
+			// 문자별 등장 횟수를 저장할 Map 객체
+			Map<Character, Integer> charCountMap = new HashMap<Character, Integer>();
+			
+			// 문자열을 char[] 타입으로 변환하여 반복
+			for(char ch : str.toCharArray()) {
+				// 공백 제외
+				if(ch == ' ') continue;
+				
+				// 주어진 문자에 해당하는 키를 통해 값(등장 횟수)을 가져오는데
+				// 해당 키에 대한 값이 없을 경우 null 대신 0 을 지정하기 위해 getOrDefault() 메서드 사용
+				// => 가져온 값 + 1 처리
+				charCountMap.put(ch, charCountMap.getOrDefault(ch, 0) + 1);
+			}
+			
+			// 반복문을 통해 매번 공백 문자를 판별하는 대신 반복 전에 미리 공백을 널스트링("") 으로 치환 후 반복 수행
+			// => 복합 필터링 시에는 replaceAll() 메서드를 사용해도 되지만 오버헤드로 인한 시간 소요가 커짐
+			// => 
+//		for(char ch : str.replace(" ", "").toCharArray()) {
+//			charCountMap.put(ch, charCountMap.getOrDefault(ch, 0) + 1);
+//		}
+			
+//			System.out.println(charCountMap);
+			// => {a=1, c=1, e=4, h=1, i=3, ,=1, m=4, n=2, .=1, o=3, s=1, t=3, u=1, y=2}
+			
+			// 최대 등장 횟수 찾기
+			// Map 객체 내에서 값(value)들의 모음을 추출하여 Collections.max() 메서드로 최대값 추출
+			int maxCount = Collections.max(charCountMap.values());
+//			System.out.println("최대 등장 횟수 : " + maxCount);
+			
+			// 최대 등장 횟수에 해당하는 문자들을 탐색하여 List 타입으로 저장
+			// => 최대 등장 횟수는 이미 추출했으므로 Map 타입으로 생성할 필요 없음
+			List<Character> maxChars = new ArrayList<Character>();
+			
+			// 탐색 시 Map 객체의 keySet() 메서드로 key 목록만 추출하여 키에 대한 값을 비교하거나
+			// 아니면, key 와 value 를 묶음으로 갖는 Map.Entry 타입 객체를 entrySet() 메서드로 추출하여 값을 비교
+			for(Map.Entry<Character, Integer> entry : charCountMap.entrySet()) {
+				if(entry.getValue() == maxCount) { // 최대 등장 횟수가 같은지 비교
+					maxChars.add(entry.getKey()); // 최대 등장 횟수에 해당하는 문자를 리스트에 저장
+				}
+			}
+			
+//			System.out.println("가장 많이 등장한 문자 : " + maxChars);
+			
+//				Collections.sort(maxChars);
+//			for(char ch : maxChars) {
+//				System.out.println(ch + " : " + maxCount);
+//			}
 		}
 		
-		System.out.println(charCountMap2);
+		double endTime = System.currentTimeMillis();
+		System.out.println((endTime - startTime) + " ms");
+		// ======================================
+		// 작업 소요 시간 측정
+		double startTime2 = System.currentTimeMillis();
+		// --------------------------------
+		for(int repeat = 1; repeat <= 10000000; repeat++) {
+			String str2 = str.replace(" ", "");
+			// 문자별 등장 횟수를 저장할 Map 객체
+			Map<Character, Integer> charCountMap2 = new HashMap<Character, Integer>();
+			
+			
+			// String 클래스의 charAt() 메서드를 통해 인덱스로 문자열에 접근할 경우 toCharArray() 메서드 보다 빠름
+			for(int i = 0; i < str2.length(); i++) {
+				char ch = str2.charAt(i);
+				charCountMap2.put(ch, charCountMap2.getOrDefault(ch, 0) + 1);
+			}
+			
+//			System.out.println(charCountMap2);
+			
+			// 최대 등장 횟수 찾기
+			// Map 객체 내에서 값(value)들의 모음을 추출하여 Collections.max() 메서드로 최대값 추출
+			int maxCount = Collections.max(charCountMap2.values());
+			
+			// Map 에서 key 에 해당하는 각 문자를 모아서 리스트로 변환
+			List<Character> keyList = new ArrayList<>(charCountMap2.keySet());
+					
+			// 리스트 정렬 시 비교 대상에 해당하는 두 개의 문자를 파라미터로 받아
+			// 두 문자에 대한 등장 횟수를 비교하여 등장 횟수가 많은 값이 앞쪽으로 위치하도록 정렬(위치 변경) = 내림차순
+			// 만약, 두 문자에 대한 뺄셈 연산을 반대로 수행할 경우 오름차순 정렬
+			keyList.sort((o1, o2) -> charCountMap2.get(o2) - charCountMap2.get(o1));
+//			System.out.println(keyList);
+			
+//			List<Character> maxChars2 = new ArrayList<Character>();
+//			for(char ch : keyList) {
+//				if(charCountMap2.get(ch) == maxCount) {
+//					maxChars2.add(ch);
+//				}
+//			}
+			
+			// 자바 스트림을 활용하여 최대 등장 횟수에 해당하는 문자들을 필터링하여 리스트로 변환
+			List<Character> maxChars2 = keyList.stream()
+												.filter(ch -> charCountMap2.get(ch) == maxCount)
+												.toList();
+			
+//			for(char ch : maxChars2) {
+//				System.out.println(ch + " : " + maxCount);
+//			}
+		}
 		
-		// Map 에서 key 에 해당하는 각 문자를 모아서 리스트로 변환
-		List<Character> keyList = new ArrayList<>(charCountMap2.keySet());
-				
-		// 리스트 정렬 시 비교 대상에 해당하는 두 개의 문자를 파라미터로 받아
-		// 두 문자에 대한 등장 횟수를 비교하여 등장 횟수가 많은 값이 앞쪽으로 위치하도록 정렬(위치 변경) = 내림차순
-		// 만약, 두 문자에 대한 뺄셈 연산을 반대로 수행할 경우 오름차순 정렬
-		keyList.sort((o1, o2) -> charCountMap2.get(o2) - charCountMap2.get(o1));
-		System.out.println(keyList);
+		double endTime2 = System.currentTimeMillis();
+		System.out.println((endTime2 - startTime2) + " ms");
+		
+		
+		
+		
 	}
 
 }
