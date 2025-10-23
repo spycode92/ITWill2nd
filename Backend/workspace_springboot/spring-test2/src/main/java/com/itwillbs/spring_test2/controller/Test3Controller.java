@@ -5,9 +5,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 
@@ -60,8 +62,27 @@ public class Test3Controller {
 				""".formatted(params.get("name"), params.get("age"));
 	}
 	
+	// --------------------------------------------------------------
+	// [ 3. PUT 방식 요청 - 데이터 수정(UPDATE) 용도의 요청으로 사용) ]
+	// 주의! 히든 메서드 필터가 동작해야 "_method" 로 전달되는 파라미터값을 요청 메서드로 판단할 수 있음
+	// => 스프링부트 설정 파일(application.properties) 에서 히든 메서드 필터링 설정 추가
+	@PutMapping("/{id}") // 공통 주소 부분인 "/members2" 제외한 뒷부분을 매핑 => 해당 경로가 현재 요청의 바인딩 대상
+	public String updateMember(@PathVariable("id") Long id, @RequestParam Map<String, String> params) {
+		return """
+				/members2(PUT) 요청<br>
+				번호 : %d<br>
+				이름 : %s<br>
+				나이 : %s
+				""".formatted(id, params.get("name"), params.get("age"));
+	}
 	
-	
+	@DeleteMapping("/{id}") // 공통 주소 부분인 "/members2" 제외한 뒷부분을 매핑 => 해당 경로가 현재 요청의 바인딩 대상
+	public String deleteMember(@PathVariable("id") Long id) {
+		return """
+				/members2(DELETE) 요청<br>
+				번호 : %d<br>
+				""".formatted(id);
+	}
 	
 }
 
