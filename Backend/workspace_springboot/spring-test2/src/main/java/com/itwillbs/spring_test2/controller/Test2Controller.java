@@ -1,7 +1,11 @@
 package com.itwillbs.spring_test2.controller;
 
+import java.util.Map;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -11,6 +15,7 @@ import com.itwillbs.spring_test2.dto.Test2DTO;
 @RestController
 public class Test2Controller {
 	
+//	@RequestMapping(name = "/members/new", method = RequestMethod.GET)
 	@GetMapping("/members/new")
 	public String newMember() {
 		return "/members/new 요청";
@@ -42,6 +47,22 @@ public class Test2Controller {
 				name 파라미터 : %s
 				""".formatted(test2DTO.getPage(), test2DTO.getLimit(), name);
 	}
+	
+	// 파라미터들을 DTO 타입 대신 java.util.Map 타입을 활용하여 바인딩 가능 => 가장 유연한 바인딩
+	// => 주의! Map 타입은 기본적으로 내부에 아무런 Entry(key, value)를 갖지 않으므로 기본적으로 파라미터가 바인딩 될 수 없다!
+	//    따라서, 자동으로 파라미터에 해당하는 엔트리를 추가(바인딩)하도록 하려면
+	//    Map 타입 파라미터 선언 시 바인딩 용도로 지정하는 @RequestParam 어노테이션 필수!
+	@GetMapping("/members/list3")
+	public String memberList3(@RequestParam Map<String, String> params) {
+		// 주의! 모든 파라미터의 key, value 가 String 타입으로 바인딩 됨(%d 포맷 대신 %s 사용)
+		return """
+				/members/list3 요청<br>
+				page 파라미터 : %s<br>
+				limit 파라미터 : %s<br>
+				name 파라미터 : %s
+				""".formatted(params.get("page"), params.get("limit"), params.get("name"));
+	}
+	
 	
 	
 	

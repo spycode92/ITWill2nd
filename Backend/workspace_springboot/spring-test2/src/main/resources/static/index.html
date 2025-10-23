@@ -13,6 +13,46 @@
 	<h3><a href="/members/new">/members/new 요청</a></h3>	
 	<h3><a href="/members/list?page=1&limit=5">/members/list 요청</a></h3>	
 	<h3><a href="/members/list2?page=1&limit=5&name=hong">/members/list2 요청</a></h3>	
+	<h3><a href="/members/list3?page=2&limit=10&name=lee">/members/list3 요청</a></h3>	
+	<hr>
+	<h3><a href="/members2/new">/members2/new 요청</a></h3>	
+	<h3><a href="/members2/list">/members2/list 요청</a></h3>	
+	<hr>
+	<!-- RESTful 한 API 형태의 요청 주소 -->
+	<!-- 1) GET 방식 요청은 [ 조회 - READ ] 용도 사용 -->
+	<!-- 요청 주소(자원) 뒤에 아무것도 포함하지 않은 GET 방식 요청 전송 시 -->
+	<!-- => "자원의 목록" 을 조회하는 요청으로 사용됨 -->
+	<h3><a href="/members2">members2 </a></h3>	
+	<!-- 자원 뒤에 파라미터 형식이 아닌 서브 도메인 형태로 id 값 등 단일 값을 포함하여 GET 방식 요청 전송 시 -->
+	<!-- 1개의 자원 정보를 조회하는 용도로 사용됨-->
+<!-- 	<h3><a href="/members2/5">members2 중에서 5번 정보 요청</a></h3>	 -->
+	<!-- form 태그로 GET 방식 요청도 동일함(method="get" 지정 또는 생략) -->
+	<form action="/members2/10" method="get">
+		<input type="submit" value="GET 방식 요청" />
+	</form>
 	
+	<!-- 2) POST 방식 요청은 [ 추가 - CREATE ] 용도로 사용 -->
+	<!-- form 태그 사용 시 method="post" 명시 -->
+	<!-- action 에는 요청 주소만 지정하고, 요청 파라미터는 모두 form 태그 내부에서 지정 -->
+	<form action="/members2" method="post">
+		<input type="text" name="name" placeholder="이름">
+		<input type="text" name="age" placeholder="나이">
+		<input type="submit" value="POST 방식 요청" />
+	</form>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
