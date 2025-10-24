@@ -3,9 +3,9 @@ package com.itwillbs.spring_test3.member;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -131,39 +131,52 @@ public class MemberController {
 	
 	// ==========================================================================
 	// 이름 등록 요청
-	@GetMapping("/regist")
-	public String registMember(@RequestParam("name") String name) {
+	@PostMapping("/regist")
+	public Member registMember(@RequestParam("name") String name) {
 		System.out.println("name : " + name);
 		
 		// MemberService - registMember() 메서드 호출하여 비즈니스 로직 처리 요청
 		// => 파라미터 : 이름   리턴타입 : Member(member)
-		Member member = memberService.searchMember(name);
-		
-		return "";
+		Member member = memberService.registMember(name);
+		// => INSERT 작업 성공 시 성공한 엔티티 객체가 리턴됨
+		return member;
 	}
 	
 	// 번호로 삭제 요청
-	@GetMapping("/removeById")
+	@PostMapping("/removeById")
 	public String removeMemberById(@RequestParam("id") Long id) {
 		System.out.println("id : " + id);
 		
-		// MemberService - searchMember() 메서드 호출하여 비즈니스 로직 처리 요청
-		// => 파라미터 : Map 객체   리턴타입 : Member
-//		Member member = memberService.searchMember(params);
-		
-		return "";
+		// MemberService - removeMemberById() 메서드 호출하여 비즈니스 로직 처리 요청
+		// => 파라미터 : 번호   리턴타입 : void
+		memberService.removeMemberById(id);
+		// NoSuchElementException 및 다른 예외가 발생하지 않았을 경우 정상 삭제 완료이므로 return 문 정상 실행됨 
+		return id + " 번 회원 삭제 완료!";
 	}
 	
 	// 이름으로 삭제 요청
-	@GetMapping("/removeByName")
+	@PostMapping("/removeByName")
 	public String removeMemberByName(@RequestParam("name") String name) {
 		System.out.println("name : " + name);
 		
-		// MemberService - searchMember() 메서드 호출하여 비즈니스 로직 처리 요청
-		// => 파라미터 : Map 객체   리턴타입 : Member
-//		Member member = memberService.searchMember(params);
+		// MemberService - removeMemberByName() 메서드 호출하여 비즈니스 로직 처리 요청
+		// => 파라미터 : 번호   리턴타입 : void
+		memberService.removeMemberByName(name);
+		// NoSuchElementException 및 다른 예외가 발생하지 않았을 경우 정상 삭제 완료이므로 return 문 정상 실행됨 
+		return name + " 회원 삭제 완료!";
+	}
+	
+	// 번호에 해당하는 이름 수정 요청
+	@PostMapping("/modify")
+	public Member modifyMember(@RequestParam("id") Long id, @RequestParam("name") String name) {
+		System.out.println("id : " + id);
+		System.out.println("name : " + name);
 		
-		return "";
+		// MemberService - modifyMember() 메서드 호출하여 비즈니스 로직 처리 요청
+		// => 파라미터 : 번호, 이름   리턴타입 : Member(member)
+		Member member = memberService.modifyMember(id, name);
+		// => 수정 성공 시 수정된 Member 엔티티가 리턴됨
+		return member;
 	}
 	
 	

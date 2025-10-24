@@ -1,3 +1,3 @@
-INSERT INTO member(id, name) VALUES (1, 'hong');
-INSERT INTO member(id, name) VALUES (2, '이순신');
-INSERT INTO member(id, name) VALUES (3, '강감찬');
+INSERT INTO member(id, name) VALUES (100, 'hong');
+INSERT INTO member(id, name) VALUES (200, '이순신');
+INSERT INTO member(id, name) VALUES (300, '강감찬');

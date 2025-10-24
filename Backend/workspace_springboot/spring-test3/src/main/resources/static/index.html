@@ -32,11 +32,11 @@
 	
 	<hr>
 	<!-- 번호(id)를 전송하여 삭제, 이름(name) 을 전송하여 삭제 요청 -->
-	<form action="/members/remove" method="post">
+	<form action="/members/removeById" method="post">
 		<input type="text" name="id" placeholder="번호">
 		<input type="submit" value="삭제(DELETE)-번호">
 	</form>
-	<form action="/members/remove" method="post">
+	<form action="/members/removeByName" method="post">
 		<input type="text" name="name" placeholder="이름">
 		<input type="submit" value="삭제(DELETE)-이름">
 	</form>

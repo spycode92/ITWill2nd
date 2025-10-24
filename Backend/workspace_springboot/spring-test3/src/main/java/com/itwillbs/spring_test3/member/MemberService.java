@@ -8,6 +8,8 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import jakarta.transaction.Transactional;
+
 //@Component // 스프링 빈으로 등록하는 공통 어노테이션
 @Service // 스프링 빈으로 등록하는 어노테이션. 서비스 역할(= 비즈니스 로직 처리)을 수행하는 용도라는 의미의 어노테이션(@Component 어노테이션을 포함함)
 public class MemberService {
@@ -102,10 +104,74 @@ public class MemberService {
 
 	// ===============================================================
 	// Member 엔티티를 생성하여 이름 저장 요청 - INSERT
+	// INSERT, DELETE, UPDATE 등의 작업을 수행하는 메서드는 상단에 @Transactional 어노테이션을 적용하여 트랜잭션 적용 필요
+	@Transactional
 	public Member registMember(String name) {
-		// 
-		return null;
+		// INSERT 작업에 사용될 Member 엔티티 객체 생성
+		// => 엔티티 생성 시 PK 값으로 사용되는 id값(@Id 어노테이션이 붙은 id 필드)은 null 값 전달하면 자동으로 부여됨
+		//    만약, 기본 생성자를 호출할 경우에는 id 값을 제외한 다른 필드의 Setter 메서드를 호출하여 저장
+		// => 주의! data.sql 파일을 통해 더미데이터를 저장할 경우 PK 값 중복으로 인한 예외 발생할 수 있으므로
+		//    옵션을 통해 data.sql 등의 스키마가 실행되지 않도록 하거나, 파일명을 data.sql 이 아닌 이름으로 변경하거나
+		//    또는 data.sql 내의 INSERT 구문의 키값(PK값 = id 컬럼)을 1번부터가 아닌 더 뒤의 값으로 수동으로 설정 
+		Member member = new Member(); // INSERT 작업에 사용할 엔티티 생성
+		member.setName(name); // 엔티티 내에 필드값 저장
+		
+		// MemberRepository - save() 메서드 호출하여 INSERT 작업 요청(별도의 정의 불필요)
+		// => 파라미터 : 엔티티 객체   리턴타입 : 엔티티 타입 객체(INSERT 작업 성공 시 해당 엔티티 리턴됨)
+		return memberRepository.save(member); // save() 메서드가 호출되는 시점에 엔티티의 필드값이 DB 에 반영(INSERT)됨
 	}
+
+	// 번호(PK)로 Member 엔티티를 통해 레코드 삭제 - DELETE
+	@Transactional
+	public void removeMemberById(Long id) {
+		// [ 첫번째 방법.  ]
+		// 리턴타입이 void 이므로 삭제 결과 알 수 없음. 단, 조회를 먼저 수행하므로 조회 결과에 따라 삭제 결과 예상 가능
+		
+		// [ 두번째 방법. 삭제할 엔티티를 먼저 조회한 후 delete() 메서드를 통해 엔티티 객체를 전달하여 삭제 처리 ]
+		// 리턴타입이 void 이므로 삭제 결과 알 수 없음. 단, 조회를 먼저 수행하므로 조회 결과에 따라 삭제 결과 예상 가능
+		// 1) 삭제할 id 에 대한 엔티티 조회(없을 경우 예외 발생 시키기)
+		Member member = memberRepository.findById(id)
+							.orElseThrow(() -> new NoSuchElementException("번호에 해당하는 회원이 존재하지 않습니다!"));
+		
+		// 2) MemberRepository - delete() 메서드 호출하여 레코드 삭제 요청
+		//    => 파라미터 : 삭제할 엔티티 => 엔티티 조회 작업이 선행되어야 함!
+		memberRepository.delete(member);
+	}
+
+	// 이름으로 Member 엔티티를 통해 레코드 삭제 - DELETE
+	@Transactional
+	public void removeMemberByName(String name) {
+		// deleteById() 외의 나머지 엔티티 필드 기준 삭제 작업은 메서드가 제공되지 않음
+		// => 따라서, findByName() 메서드를 통해 이름 기준 조회를 수행 후 delete() 메서드로 삭제만 가능 
+		// 1) 삭제할 name 에 대한 엔티티 조회(없을 경우 예외 발생 시키기)
+		Member member = memberRepository.findByName(name)
+							.orElseThrow(() -> new NoSuchElementException("이름에 해당하는 회원이 존재하지 않습니다!"));
+		
+		// 2) MemberRepository - delete() 메서드 호출하여 레코드 삭제 요청
+		//    => 파라미터 : 삭제할 엔티티 => 엔티티 조회 작업이 선행되어야 함!
+		memberRepository.delete(member);
+	}
+
+	// ==============================================================
+	// 정보 수정(번호에 해당하는 이름 수정) - UPDATE
+	@Transactional
+	public Member modifyMember(Long id, String name) {
+		// 1) 번호에 해당하는 엔티티 조회
+		Member member = memberRepository.findById(id)
+				.orElseThrow(() -> new NoSuchElementException("번호에 해당하는 회원이 존재하지 않습니다!"));
+		System.out.println(member);
+		
+		// UPDATE 작업 수행은 Repository 의 쿼리 메서드 호출이 아닌 엔티티 객체의 필드값 변경하는 메서드를 정의하여 작업 수행
+		// => Member 엔티티 클래스 내에 changeName() 등의 메서드를 정의하고, 메서드 내에서 엔티티 필드값을 변경하는 코드를 작성하면
+		//    해당 메서드가 호출되어 필드값이 변경되면 JPA 더티체킹(Dirty Checking = 엔티티 값이 변경된 것을 자동으로 감지)에 의해
+		//    변경된 값에 대한 트랜잭션 커밋 시점에 DB UPDATE 작업이 자동으로 수행됨 
+		// => 주의! 새 엔티티가 아닌 기존에 조회된 엔티티를 대상으로 변경 메서드를 호출해야한다!
+		member.changeName(name);
+		
+		return member;
+	}
+	
+	
 
 }
 

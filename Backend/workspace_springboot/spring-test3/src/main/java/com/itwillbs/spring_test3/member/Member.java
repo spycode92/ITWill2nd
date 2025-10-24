@@ -42,6 +42,12 @@ public class Member { // 클래스명 Member 와 동일한 이름의 테이블�
 	// 컬럼 길이가 16 이므로 String 타입에 대한 VARCHAR(16) 등의 형식으로 선언(length 속성 생략 시 String 타입의 기본은 VARCHAR(255))
 	// nullable = false 속성 설정 시 해당 컬럼은 NOT NULL 제약조건 설정됨
 	private String name;
+	
+	// =============================================
+	// 더티체킹을 통해 UPDATE 처리를 위한 메서드 정의
+	public void changeName(String name) {
+		this.name = name; // 변경된 상태를 JPA 가 감지(더티체킹 = 변경감지)하여 트랜잭션 커밋 시점에 DB UPDATE 수행
+	}
 }
 
 
