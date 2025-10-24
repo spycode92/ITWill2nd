@@ -129,6 +129,43 @@ public class MemberController {
 		return member;
 	}
 	
+	// ==========================================================================
+	// 이름 등록 요청
+	@GetMapping("/regist")
+	public String registMember(@RequestParam("name") String name) {
+		System.out.println("name : " + name);
+		
+		// MemberService - registMember() 메서드 호출하여 비즈니스 로직 처리 요청
+		// => 파라미터 : 이름   리턴타입 : Member(member)
+		Member member = memberService.searchMember(name);
+		
+		return "";
+	}
+	
+	// 번호로 삭제 요청
+	@GetMapping("/removeById")
+	public String removeMemberById(@RequestParam("id") Long id) {
+		System.out.println("id : " + id);
+		
+		// MemberService - searchMember() 메서드 호출하여 비즈니스 로직 처리 요청
+		// => 파라미터 : Map 객체   리턴타입 : Member
+//		Member member = memberService.searchMember(params);
+		
+		return "";
+	}
+	
+	// 이름으로 삭제 요청
+	@GetMapping("/removeByName")
+	public String removeMemberByName(@RequestParam("name") String name) {
+		System.out.println("name : " + name);
+		
+		// MemberService - searchMember() 메서드 호출하여 비즈니스 로직 처리 요청
+		// => 파라미터 : Map 객체   리턴타입 : Member
+//		Member member = memberService.searchMember(params);
+		
+		return "";
+	}
+	
 	
 }
 

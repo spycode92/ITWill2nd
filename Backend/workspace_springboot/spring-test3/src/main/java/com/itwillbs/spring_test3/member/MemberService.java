@@ -100,6 +100,13 @@ public class MemberService {
 				.orElseThrow(() -> new NoSuchElementException("해당 번호와 이름이 일치하는 회원이 존재하지 않습니다!"));
 	}
 
+	// ===============================================================
+	// Member 엔티티를 생성하여 이름 저장 요청 - INSERT
+	public Member registMember(String name) {
+		// 
+		return null;
+	}
+
 }
 
 

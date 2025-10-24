@@ -23,6 +23,31 @@
 		<input type="text" name="name" placeholder="이름">
 		<input type="submit" value="이름으로 조회">
 	</form>
+	<hr>
+	<!-- 이름(name) 을 전송하여 등록 요청 -->
+	<form action="/members/regist" method="post">
+		<input type="text" name="name" placeholder="이름">
+		<input type="submit" value="등록(INSERT)">
+	</form>
+	
+	<hr>
+	<!-- 번호(id)를 전송하여 삭제, 이름(name) 을 전송하여 삭제 요청 -->
+	<form action="/members/remove" method="post">
+		<input type="text" name="id" placeholder="번호">
+		<input type="submit" value="삭제(DELETE)-번호">
+	</form>
+	<form action="/members/remove" method="post">
+		<input type="text" name="name" placeholder="이름">
+		<input type="submit" value="삭제(DELETE)-이름">
+	</form>
+	
+	<hr>
+	<!-- 번호(id)와 이름(name) 을 전송하여 번호에 해당하는 이름 수정 요청 -->
+	<form action="/members/modify" method="post">
+		<input type="text" name="id" placeholder="번호">
+		<input type="text" name="name" placeholder="이름">
+		<input type="submit" value="수정(UPDATE)">
+	</form>
 </body>
 </html>
 
