@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<script>
+// 		데이터 형식을 다음과 같이 변환하시오. (15점)
+// 		예시) {name: '홍길동', age: 44} --> [ {key: 'name', value: '홍길동'}, {key: 'age', value: 44} ]
+// 		참고) JSON 형식 데이터에서 속성명(키)에 해당하는 목록만 추출하는 함수 Object.keys(JSON데이터)
+		// =============================================
+	
+		let data = {name: "홍길동", age: 44};
+		
+		// -------------------------------------
+		let arr = [];
+		// JSON 객체에서 key 목록을 꺼내서 반복
+		Object.keys(data).forEach(e => { // 각각의 키를 e 에 저장
+			let obj = {}; // 1개의 객체 생성
+			obj.key = e; // 객체의 키 저장
+			obj.value = data[e]; // 객체의 키에 해당하는 값 저장
+			
+			// 생성된 객체를 배열에 추가
+			arr.push(obj);
+			console.log(obj);
+		});
+		console.log(arr);
+		
+		// -------------------------------------
+		let arr2 = Object.entries(data).map(([key, value]) => {
+			return {key, value};
+		});
+		console.log(arr2);
+		
+		
+	</script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
