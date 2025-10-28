@@ -36,8 +36,56 @@
 		<!-- ${} 내부에 # 사용하여 타임리프 내장객체에 접근 가능(#temporals 객체의 format() 메서드 활용하여 포맷팅 가능) -->
 		<!-- ${#temporals.format(원본날짜객체, '날짜포맷문자열')} => java.time 패키지(LocalDate, LocalTime, LocalDateTime)을 대상으로 사용 가능 -->
 		<!-- 참고) Date, Calender 등의 전통적인 자바 날짜 및 시각 객체 포맷팅은 #dates.format() 활용 -->
-		회원가입일시(포맷팅) : <span th:text="${#temporals.format(memberDTO.regTime, 'yyyy-MM-dd HH:mm:ss')}"></span>
+		회원가입일시(포맷팅) : <span th:text="${#temporals.format(memberDTO.regTime,'yyyy-MM-dd HH:mm:ss')}"></span>
 	</div>
+	<hr>
+	
+	<!-- th:object=${} 속성 사용하여 객체를 지정하면, 해당 태그 내부에서 *{필드명} 형태로 객체명 생략하고 접근 가능 -->
+	<div th:object="${memberDTO}"> <!-- 현재 div 태그 블럭 내부에서 memberDTO 객체의 필드들을 *{필드명} 만으로 접근 가능해진다! -->
+		<div>
+			회원번호 : <span th:text="*{id}"></span>
+		</div>
+		<div>
+			회원이름 : <span th:text="*{name}"></span>
+		</div>
+		<div>
+			아이디 : <span th:text="*{userId}"></span>
+		</div>
+		<div>
+			패스워드 : <span th:text="*{passwd}"></span>
+		</div>
+		<div>
+			회원등급 : <span th:text="|*{grade} 등급22, *{grade} 등급33|"></span>
+		</div>
+		<div>
+			회원가입일시(포맷팅) : <span th:text="*{#temporals.format(regTime,'yyyy-MM-dd HH:mm:ss')}"></span>
+		</div>
+	</div>
+	<hr>
+	
+	<!-- th:object=${} 속성 사용하기 위해 div 또는 span 등의 블럭을 사용할 경우 불필요한 영역 태그가 추가됨(DOM 상에 불필요한 요소 생성됨) -->
+	<!-- 따라서, 타임리프에서는 블럭 생성 용도의 가상 태그 <th:block></th:block> 태그를 별도로 제공함 -->
+	<th:block th:object="${memberDTO}"> <!-- 현재 div 태그 블럭 내부에서 memberDTO 객체의 필드들을 *{필드명} 만으로 접근 가능해진다! -->
+		<div>
+			회원번호 : <span th:text="*{id}"></span>
+		</div>
+		<div>
+			회원이름 : <span th:text="*{name}"></span>
+		</div>
+		<div>
+			아이디 : <span th:text="*{userId}"></span>
+		</div>
+		<div>
+			패스워드 : <span th:text="*{passwd}"></span>
+		</div>
+		<div>
+			회원등급 : <span th:text="|*{grade} 등급22, *{grade} 등급33|"></span>
+		</div>
+		<div>
+			회원가입일시(포맷팅) : <span th:text="*{#temporals.format(regTime,'yyyy-MM-dd HH:mm:ss')}"></span>
+		</div>
+	</th:block>
+	
 </body>
 </html>
 
