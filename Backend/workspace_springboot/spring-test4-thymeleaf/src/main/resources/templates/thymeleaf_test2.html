@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<h1>thymeleaf_test2.html</h1>
+	<!-- 단일 객체 데이터는 th:xxx="${객체명.필드명}" 형태로 접근 -->
+	<div>
+		회원번호 : <span th:text="${memberDTO.id}"></span>
+	</div>
+	<div>
+		회원이름 : <span th:text="${memberDTO.name}"></span>
+	</div>
+	<div>
+		아이디 : <span th:text="${memberDTO.userId}"></span>
+	</div>
+	<div>
+		패스워드 : <span th:text="${memberDTO.passwd}"></span>
+	</div>
+	<div>
+<!-- 		회원등급 : <span th:text="${memberDTO.grade}"></span> -->
+		<!-- 타임리프 문법에 데이터와 문자열을 결합하여 출력하는 방법 -->
+		<!-- 1) 연결 연산자 활용 -->
+<!-- 		회원등급 : <span th:text="${memberDTO.grade + '등급'}"></span> -->
+		<!-- 2) 데이터를 표현하는 문법 자체를 || 기호로 감싸고, 일반 텍스트는 ${} 기호 바깥(결합될 위치)에 그대로 기술 -->
+		<!--    => 복수개의 데이터와 복수개의 문자열 결합도 가능(표기된 그대로 출력함) -->
+		회원등급 : <span th:text="|${memberDTO.grade} 등급22, ${memberDTO.grade} 등급33|"></span>
+	</div>
+	<div>
+		회원가입일시 : <span th:text="${memberDTO.regTime}"></span><br>
+		<!-- 자바의 java.time 패키지에 있는 LocalDateTime 클래스를 활용하여 날짜 및 시각 표현할 때 -->
+		<!-- 뷰페이지에서 "날짜T시각" 형태로 표시되며, 시각의 경우 밀리초, 마이크로노, 나노초 단위까지 표시됨 -->
+		<!-- 따라서, 해당 날짜 및 시각 형태에 대한 포맷팅을 통해 표시되는 형식을 변경해야함 -->
+		<!-- ${} 내부에 # 사용하여 타임리프 내장객체에 접근 가능(#temporals 객체의 format() 메서드 활용하여 포맷팅 가능) -->
+		<!-- ${#temporals.format(원본날짜객체, '날짜포맷문자열')} => java.time 패키지(LocalDate, LocalTime, LocalDateTime)을 대상으로 사용 가능 -->
+		<!-- 참고) Date, Calender 등의 전통적인 자바 날짜 및 시각 객체 포맷팅은 #dates.format() 활용 -->
+		회원가입일시(포맷팅) : <span th:text="${#temporals.format(memberDTO.regTime, 'yyyy-MM-dd HH:mm:ss')}"></span>
+	</div>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
