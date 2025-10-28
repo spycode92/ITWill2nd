@@ -17,6 +17,11 @@ public class MemberService {
 	@Autowired
 	private MemberRepository memberRepository;
 	
+	// 마이바티스 연동을 통해 사용할 MemberMapper 객체 자동 주입 설정
+	@Autowired
+	private MemberMapper memberMapper;
+	
+	
 	// DI 확인을 위한 임시 메서드
 //	public void test() {
 //		System.out.println("MemberService - test()");
@@ -33,7 +38,11 @@ public class MemberService {
 		//    MemberRepository 인터페이스 정의 시 extends JpaRepository<Member, Long> 형태로 상속을 표현했을 때
 		//    제네릭타입 첫번째로 지정된 엔티티 클래스 타입 Member 가 T 부분에 해당하는 타입으로 적용됨
 		//    따라서, 해당 엔티티와 연결된 테이블을 조회하여 List<T> 타입 대신 엔티티에 대한 타입인 List<Member> 타입으로 변경되어 객체가 리턴됨 
-		return memberRepository.findAll();
+//		return memberRepository.findAll();
+		// ----------------------
+		// 마이바티스 연동으로 동일한 작업 처리
+		// MemberMapper - selectMemberList() 메서드 호출
+		return memberMapper.selectMemberList();
 	}
 
 	public Member getMember(Long id) {
@@ -118,7 +127,11 @@ public class MemberService {
 		
 		// MemberRepository - save() 메서드 호출하여 INSERT 작업 요청(별도의 정의 불필요)
 		// => 파라미터 : 엔티티 객체   리턴타입 : 엔티티 타입 객체(INSERT 작업 성공 시 해당 엔티티 리턴됨)
-		return memberRepository.save(member); // save() 메서드가 호출되는 시점에 엔티티의 필드값이 DB 에 반영(INSERT)됨
+//		return memberRepository.save(member); // save() 메서드가 호출되는 시점에 엔티티의 필드값이 DB 에 반영(INSERT)됨
+		// ---------------------------------------
+		// 마이바티스를 통해 동일한 작업 처리
+		memberMapper.insertMember(member);
+		return null;
 	}
 
 	// 번호(PK)로 Member 엔티티를 통해 레코드 삭제 - DELETE
