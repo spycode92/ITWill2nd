@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<h1>thymeleaf_test5.html - 하이퍼링크</h1>
+	<div>
+		<!-- 상대주소(Context-relative URL) 지정 - 서버 내부 이동 -->
+		<!-- 일반 하이퍼링크 표현 - "/thymeleaf/test1" 주소 요청 -->
+		<a href="/thymeleaf/test1">test1 로 이동</a><br> <!-- 일반 하이퍼링크와 -->
+		<!-- 타임리프에서 하이퍼링크 표현은 <a th:href="@{이동할URL}"></a>-->
+		<a th:href="@{/thymeleaf/test1}">test1 로 이동</a> <!-- 타임리프용 하이퍼링크의 차이가 없는 형태의 요청 -->
+	</div>
+	
+	<div>
+		<!-- 절대주소(Absolute URL) 지정 -->
+		<a th:href="@{http://www.itwillbs.co.kr}">아이티윌부산 홈페이지로 이동</a>
+	</div>
+	<!-- 위의 하이퍼링크들은 일반 하이퍼링크로 대체해도 동일하게 동작함(즉, 타임리프식 하이퍼링크 불필요) -->
+	<!-- 타임리프식 하이퍼링크는 동적 경로를 생성하거나, URL 에 동적 파라미터를 결합해야할 때 필요 -->
+	<div>
+		전달받은 data 속성값 : <th:block th:text=${data}></th:block><br>
+		전달받은 nextURL 속성값 : <th:block th:text=${nextURL}></th:block><br>
+		
+		<a href="/thymeleaf/test5-2?param1=데이터&param2=${data}">test5-2 로 이동</a><br>
+	</div>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

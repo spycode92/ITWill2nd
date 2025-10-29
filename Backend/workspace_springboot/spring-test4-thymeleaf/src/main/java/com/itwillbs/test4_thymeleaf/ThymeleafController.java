@@ -101,6 +101,38 @@ public class ThymeleafController {
 		return "/thymeleaf_test3";
 	}
 	
+	// --------------------------------------------------------
+	// 조건문 연습
+	@GetMapping("test4")
+	public String test4(Model model) {
+		List<ItemDTO> itemList = new ArrayList<>();
+		
+		for(int i = 1; i <= 10; i++) {
+			ItemDTO itemDTO = ItemDTO.builder()
+					.id((long)i)
+					.itemNm("상품명" + i)
+					.itemDetail("상세설명" + i)
+					.price(10000 * i)
+					.stockQty(new SecureRandom().nextInt(10 * i))
+					.regTime(LocalDateTime.now())
+					.build();
+			
+			itemList.add(itemDTO);
+		}
+		
+		model.addAttribute("itemList", itemList);
+		
+		return "/thymeleaf_test4";
+	}
+	
+	// --------------------------------------------------------
+	// 하이퍼링크 연습
+	@GetMapping("test5")
+	public String test5(Model model) {
+		model.addAttribute("data", "테스트 데이터");
+		model.addAttribute("nextURL", "test5-2");
+		return "/thymeleaf_test5";
+	}
 	
 }
 
