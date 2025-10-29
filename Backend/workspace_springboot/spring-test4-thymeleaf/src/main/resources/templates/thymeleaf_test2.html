@@ -85,6 +85,28 @@
 			회원가입일시(포맷팅) : <span th:text="*{#temporals.format(regTime,'yyyy-MM-dd HH:mm:ss')}"></span>
 		</div>
 	</th:block>
+	<hr>
+	<!-- =================================================== -->
+	<th:block th:object="${itemDTO}"> <!-- 현재 div 태그 블럭 내부에서 memberDTO 객체의 필드들을 *{필드명} 만으로 접근 가능해진다! -->
+		<div>
+			상품번호 : <span th:text="*{id}"></span>
+		</div>
+		<div>
+			상품명 : <span th:text="*{itemNm}"></span>
+		</div>
+		<div>
+			상품상세설명 : <span th:text="*{itemDetail}"></span>
+		</div>
+		<div>
+			가격 : <span th:text="|*{price} 원|"></span>
+		</div>
+		<div>
+			수량 : <span th:text="|*{stockQty} 개|"></span>
+		</div>
+		<div>
+			상품등록일시(포맷팅) : <span th:text="*{#temporals.format(regTime,'yyyy-MM-dd HH:mm')}"></span>
+		</div>
+	</th:block>
 	
 </body>
 </html>

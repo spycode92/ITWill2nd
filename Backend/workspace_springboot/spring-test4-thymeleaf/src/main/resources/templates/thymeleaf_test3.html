@@ -5,6 +5,68 @@
 <title>Insert title here</title>
 </head>
 <body>
+	<h1>thymeleaf_test3.html</h1>
+	<table border="1">
+		<thead>
+			<tr>
+				<th>순번</th>
+				<th>상품번호</th>
+				<th>상품명</th>
+				<th>상세설명</th>
+				<th>가격</th>
+				<th>수량</th>
+				<th>등록일시</th>
+			</tr>
+		</thead>
+		<tbody>
+<!-- 			<tr><td colspan="7" th:text="${itemList}"></td></tr> -->
+			<!-- 반복할 블럭의 시작 태그에 th:each 속성을 통해 복수개의 객체(배열, 컬렉션 등)를 반복 접근 가능(= 향상된 for문 역할) -->
+			<!-- 기본 문법 : th:each="객체 1개를 꺼내서 저장할 변수명 : ${복수개의 데이터가 저장된 객체명}" -->
+<!-- 			<tr th:each="item : ${itemList}"> tr 태그를 반복할 블럭의 시작으로 설정 -->
+			<tr th:each="item : ${itemList}" th:object="${item}"> <!-- tr 태그를 반복할 블럭의 시작으로 설정 -->
+				<!-- 반복 시 표시할 실제 데이터를 ${} 형태로 지정 => ${item.필드명} -->
+<!-- 				<td></td> -->
+<!-- 				<td th:text="${item.id}"></td> -->
+<!-- 				<td th:text="${item.itemNm}"></td> -->
+<!-- 				<td th:text="${item.itemDetail}"></td> -->
+<!-- 				<td th:text="${item.price}"></td> -->
+<!-- 				<td th:text="${item.stockQty}"></td> -->
+<!-- 				<td th:text="${#temporals.format(item.regTime,'yyyy-MM-dd HH:mm')}"></td> -->
 
+				<!-- th:object 속성을 활용하여 item.xxx 에서 item 생략 -->
+<!-- 				<th:block th:object="${item}"> -->
+					<td></td>
+					<td th:text="*{id}"></td>
+					<td th:text="*{itemNm}"></td>
+					<td th:text="*{itemDetail}"></td>
+					<td th:text="*{price}"></td>
+					<td th:text="*{stockQty}"></td>
+					<td th:text="*{#temporals.format(regTime,'yyyy-MM-dd HH:mm')}"></td>
+<!-- 				</th:block> -->
+			</tr>
+		</tbody>
+	</table>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
