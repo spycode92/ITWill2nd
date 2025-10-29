@@ -4,16 +4,23 @@ import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.itwillbs.test4_thymeleaf.item.ItemDTO;
 
+import jakarta.servlet.http.HttpSession;
+import lombok.extern.log4j.Log4j2;
+
 @Controller
 @RequestMapping("/thymeleaf")
+@Log4j2 // 클래스 내의 메서드에서 로그 메세지 출력문으로 사용할 log.xxx() 메서드를 제공하는 어노테이션
 public class ThymeleafController {
 	// 단일 데이터를 Model 객체에 담아 타임리프 템플릿 페이지(= 뷰페이지)에서 출력하기
 	@GetMapping("test1")
@@ -132,6 +139,33 @@ public class ThymeleafController {
 		model.addAttribute("data", "테스트 데이터");
 		model.addAttribute("nextURL", "test5-2");
 		return "/thymeleaf_test5";
+	}
+	
+	@GetMapping("test5-2")
+	public String test5_2(@RequestParam Map<String, String> params, Model model, HttpSession session) {
+//		System.out.println("param1 : " + params.get("param1"));
+		// => System.out.println() 등의 출력문 대신 로그 메세지로 출력하는 것이 성능 향상에 도움이 되며, 로그 메세지를 별도로 관리도 가능
+		// => 로그 출력 시 Lombok 에서 제공하는 @Log4j2 어노테이션을 지정하고, log.xxx() 메서드로 로그메세지 출력
+		//    log.xxx() 메서드의 xxx 에 해당하는 메서드명은 로그 심각도와 동일한 이름의 메서드를 지정
+		//    로그 심각도 : TRACE < DEBUG < INFO < WARN < ERROR < FATAL 순(우측으로 갈 수록 심각도 높음)
+		log.info("★★★★★★★★★★★★★ params : " + params);
+		log.info("★★★★★★★★★★★★★ param1 : " + params.get("param1"));
+		log.info("★★★★★★★★★★★★★ param2 : " + params.get("param2"));
+		log.info("★★★★★★★★★★★★★ param3 : " + params.get("param3"));
+		
+		model.addAttribute("params", params);
+		// -----------------------------------------------------------
+		// 세션 객체에 id 라는 속성명으로 "admin" 문자열 저장
+		session.setAttribute("id", "admin");
+		
+		return "/thymeleaf_test5-2";
+	}
+	
+	// ==========================================
+	// 타임리프 레이아웃
+	@GetMapping("test6")
+	public String test6() {
+		return "/thymeleaf_test6_layout";
 	}
 	
 }

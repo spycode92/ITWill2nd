@@ -24,7 +24,15 @@
 		전달받은 data 속성값 : <th:block th:text=${data}></th:block><br>
 		전달받은 nextURL 속성값 : <th:block th:text=${nextURL}></th:block><br>
 		
-		<a href="/thymeleaf/test5-2?param1=데이터&param2=${data}">test5-2 로 이동</a><br>
+		<!-- 일반 하이퍼링크에 ${} 사용해서 동적 파라미터 결합이 불가능 -->
+<!-- 		<a href="/thymeleaf/test5-2?param1=데이터&param2=${data}">test5-2 로 이동</a><br> -->
+		
+		<!-- 하이퍼링크 파라미터 전달 기본 문법 : th:href="@{URL(파라미터명1 = 데이터1, ...생략..., 파라미터n = 데이터n)} -->
+		<!-- 별도의 문자열 표현(따옴표) 불필요 -->
+		<a th:href="@{/thymeleaf/test5-2(param1 = 데이터1, param2 = ${data}, param3 = 222)}">test5-2 로 이동</a><br>
+		
+		<!-- 경로 변수 사용 시 달라지는 점 -->
+		<a th:href="@{/thymeleaf/{id}(id = ${data})}">test5-2 로 이동</a><br>
 	</div>
 </body>
 </html>
