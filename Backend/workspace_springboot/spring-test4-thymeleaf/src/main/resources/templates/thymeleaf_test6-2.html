@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<!-- 템플릿 페이지 형태(레이아웃)로 작성된 thymeleaf_test6-2_layout.html 프래그먼트를 현재 파일에 덮어쓰기 -->
+<html xmlns:th="http://www.thymeleaf.org"
+		th:replace="thymeleaf_test6-2_layout::layout">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<div th:fragment="content">
+		<h3>thymeleaf_test6-2.html</h3>
+		<h1>본문 영역</h1>
+		<!-- thymeleaf_test6-3.html 로 이동하는 타임리프 형식의 하이퍼링크 생성 -->
+		<a th:href="@{/thymeleaf/test6-3}">test6-3</a>
+	</div>
+	
+	<!-- 개별 페이지의 자바스크립트 코드 작성 => 프래그먼트명을 script 로 지정 -->
+	<th:block th:fragment="myScript">
+		<script type="text/javascript">
+			console.log("test6-2 스크립트 실행됨!");
+		</script>
+	</th:block>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+

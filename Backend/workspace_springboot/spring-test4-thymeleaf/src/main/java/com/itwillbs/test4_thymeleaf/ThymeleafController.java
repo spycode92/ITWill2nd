@@ -168,6 +168,16 @@ public class ThymeleafController {
 		return "/thymeleaf_test6_layout";
 	}
 	
+	@GetMapping("test6-2")
+	public String test6_2() {
+		return "/thymeleaf_test6-2";
+	}
+	
+	@GetMapping("test6-3")
+	public String test6_3() {
+		return "/thymeleaf_test6-3";
+	}
+	
 }
 
 
