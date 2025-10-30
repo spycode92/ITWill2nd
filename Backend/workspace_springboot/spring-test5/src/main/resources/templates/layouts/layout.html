@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<!-- Thymeleaf Layout Dialect 사용을 위해 공통 레이아웃을 구성하는 페이지 html 태그에 네임스페이스 하나 더 추가 -->
+<html xmlns:th="http://www.thymeleaf.org"
+		xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+	<meta charset="UTF-8">
+	<title>Insert title here</title>
+	<!-- 공통 CSS, JS 등의 리소스 불러오는 영역 -->
+	
+	<!-- 공통 자바스크립트 영역 -->
+	<script>
+		console.log("공통 자바스크립트 영역 코드 실행!");
+	</script>
+</head>
+<body>
+	<!-- 공통 헤더 -->
+	<header th:insert="~{fragments/header}">헤더 내용</header>
+
+	<hr>
+	
+	<!-- 본문 -->
+	<main>
+		<!-- 실제 본문이 표시될 영역을 레이아웃 페이지에서 프래그먼트로 선언 -->
+		<th:block layout:fragment="content"></th:block>
+	</main>
+	
+	<hr>
+	<!-- 공통 푸터 -->
+	<footer th:insert="~{fragments/footer}">푸터 내용</footer>
+	
+	<!-- 개별 페이지의 자바스크립트 영역 -->
+	<th:block layout:fragment="myScript"></th:block>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

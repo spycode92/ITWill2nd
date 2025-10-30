@@ -64,9 +64,9 @@ dependencies {
 	implementation 'org.modelmapper:modelmapper:3.2.5'
 	// --------------------------------------------
 	// 스프링시큐리티 의존성 추가(부트 스타터 패키지에서 spring security 선택 시 자동 추가됨)	
-//	implementation 'org.springframework.boot:spring-boot-starter-security'
-//	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
-//	testImplementation 'org.springframework.security:spring-security-test'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
+	testImplementation 'org.springframework.security:spring-security-test'
 	// --------------------------------------------
 	// 웹소켓(Spring WebSocket + SockJS + STOMP) 의존성 추가(부트 스타터 패키지에서 websocket 선택 시 자동 추가됨)	
 	implementation 'org.springframework.boot:spring-boot-starter-websocket'
