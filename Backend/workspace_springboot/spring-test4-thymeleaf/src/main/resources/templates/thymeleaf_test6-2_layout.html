@@ -30,7 +30,20 @@
 	      실제 표시될 본문 등의 내용을 담은 페이지를 각각 작성하여 통합된 레이아웃으로 각각의 페이지를 작성하게 되며
 	      이를 통해 중복된 코드 제거가 가능하다!
 	-->
-	<main th:replace="~{::content}">
+<!-- 	<main> -->
+<!-- 		<th:block th:replace="~{::content}"> -->
+<!-- 			<h1>테스트</h1> -->
+<!-- 		</th:block> -->
+<!-- 	</main> -->
+
+	<h3>확인용</h3>
+	<!-- th:replace 가 적용되는 태그는 대상 컨텐츠가 덮어쓰게 되므로 적용된 태그는 현재 페이지에서 사라짐 -->
+<!-- 	<main th:replace="~{::content}"> -->
+	<!-- th:include 와 th:insert 가 적용되는 태그는 대상 컨텐츠가 현재 태그 내부에 삽입됨(th 가 적용된 태그가 남아있음) -->
+	<!-- th:include 로 포함되는 대상의 th:fragment 속성이 적용된 태그를 제외한 내부 컨텐츠만 포함시킴 -->
+<!-- 	<main th:include="~{::content}"> -->
+	<!-- th:insert 로 포함되는 대상의 th:fragment 속성이 적용된 태그를 포함한 내부 컨텐츠까지 모두 포함시킴 -->
+	<main th:insert="~{::content}">
 		<h1>테스트</h1>
 	</main>
 	

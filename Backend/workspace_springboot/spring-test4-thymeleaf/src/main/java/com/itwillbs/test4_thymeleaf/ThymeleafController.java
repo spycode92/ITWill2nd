@@ -178,6 +178,12 @@ public class ThymeleafController {
 		return "/thymeleaf_test6-3";
 	}
 	
+	// Thymeleaf Layout Dialect 사용 시 실제 컨텐츠 페이지로 포워딩(레이아웃 페이지가 아님!)
+	@GetMapping("test7")
+	public String test7() {
+		return "/thymeleaf_test7";
+	}
+	
 }
 
 
