@@ -5,6 +5,8 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+<!-- 공통 CSS, JS 등의 리소스 불러오는 영역 -->
+
 <!-- 공통 자바스크립트 영역 -->
 <script>
 	console.log("공통 자바스크립트 영역 코드 실행!");
@@ -12,7 +14,11 @@
 </head>
 <body>
 	<!-- 공통 헤더 -->
-	<header th:include="~{fragments/header7}">헤더 내용</header>
+	<header th:insert="~{fragments/header7}">헤더 내용</header>
+<!-- 	<header> -->
+<!-- 		<th:block layout:fragment="header7_fragment"></th:block> -->
+<!-- 	</header> -->
+
 	<hr>
 	
 	<!-- 본문 -->
@@ -23,7 +29,10 @@
 	
 	<hr>
 	<!-- 공통 푸터 -->
-	<footer th:include="~{fragments/footer7}">푸터 내용</footer>
+	<footer th:insert="~{fragments/footer7}">푸터 내용</footer>
+<!-- 	<footer> -->
+<!-- 		<th:block layout:fragment="footer7_fragment"></th:block> -->
+<!-- 	</footer> -->
 	
 	<!-- 개별 페이지의 자바스크립트 영역 => test7.html 파일에서 정의된 스크립트 프래그먼트 지정 -->
 	<th:block layout:fragment="myScript"></th:block>

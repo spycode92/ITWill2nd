@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<!-- thymeleaf_test7_layout 상속받기 -->
+<html xmlns:th="http://www.thymeleaf.org"
+		xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+		layout:decorate="~{thymeleaf_test7_layout}">
+<!-- 만약, 추가적인 <head> 태그 내용이 개별 페이지에서 필요할 경우 별도의 <head> 작성하면 레이아웃 <head> 와 결합됨 -->
+<head>
+	<!-- 정적 리소스의 기본 경로 : src/main/resources/static -->
+	<link rel="stylesheet" th:href="@{/css/test7.css}" />
+<!-- 	<script th:src="@{/js/test7.js}"></script> -->
+	<!-- 대상 경로 지정 시 타임리프 문장이 경로상에 활용되지 않으면 th:xxx 불필요(생략 가능) -->
+	<script src="/js/test7.js"></script>
+</head>		
+<body>
+	<div layout:fragment="content">
+		<h3>thymeleaf_test7-2.html</h3>
+		<h1>test7-2 본문 영역</h1>
+	</div>
+	
+	<!-- 개별 페이지의 자바스크립트 코드 작성 => 프래그먼트명을 script 로 지정 -->
+	<th:block layout:fragment="myScript">
+		<script type="text/javascript">
+			console.log("test7-2 스크립트 실행됨!!!!!");
+			console.log("test7-2 스크립트 실행됨!!!!!");
+			console.log("test7-2 스크립트 실행됨!!!!!");
+		</script>
+	</th:block>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+

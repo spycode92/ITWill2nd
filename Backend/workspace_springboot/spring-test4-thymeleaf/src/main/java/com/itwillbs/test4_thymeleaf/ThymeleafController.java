@@ -184,6 +184,11 @@ public class ThymeleafController {
 		return "/thymeleaf_test7";
 	}
 	
+	@GetMapping("test7-2")
+	public String test7_2() {
+		return "/thymeleaf_test7-2";
+	}
+	
 }
 
 
