@@ -29,13 +29,19 @@ public class MemberRole {
 
 	// 사용자(MEMBERS) 테이블과 사용자 테이블과의 연관관계 설정
 	@ManyToOne(fetch = FetchType.LAZY) // 지연로딩
-	@JoinColumn(name = "member_id", nullable = false)
+	@JoinColumn(name = "member_id", nullable = false) // member 테이블에 연결할 컬럼을 member_role 테이블의 member_id 컬럼으로 지정(FK 설정)
 	private Member member;
 	
 	// 공통코드(COMMON_CODE) 테이블과 사용자 테이블과의 연관관계 설정
 	@ManyToOne(fetch = FetchType.LAZY) // 지연로딩
-	@JoinColumn(name = "member_role_id", nullable = false)
+	@JoinColumn(name = "member_role_id", nullable = false) // common_code 테이블에 연결할 컬럼을 member_role 테이블의 member_role_id 컬럼으로 지정(FK 설정)
 	private CommonCode role;
+
+	// id 를 제외한 Member, CommonCode 엔티티를 전달받아 객체를 초기화하는 생성자 정의
+	public MemberRole(Member member, CommonCode role) {
+		this.member = member;
+		this.role = role;
+	}
 	
 	
 }

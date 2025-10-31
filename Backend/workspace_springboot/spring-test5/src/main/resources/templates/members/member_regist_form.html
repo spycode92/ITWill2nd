@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+		xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+		layout:decorate="~{layouts/layout}">
+<head>
+	<!-- 개별페이지 CSS 영역 -->
+	<th:block layout:fragment="style">
+		<style>
+			section h3 {
+				text-align: center;
+			}
+		
+			.align_center {
+				text-align: center;
+			}
+		</style>
+	</th:block>
+</head>	
+<body>
+	<section layout:fragment="content">
+		<h3>회원 가입</h3>
+		<div id="registForm">
+			<form method="post">
+				<table border="1">
+					<tr>
+						<th>이름</th>
+						<td>
+							<input type="text" name="name" required>
+						</td>
+					</tr>
+					<tr>
+						<th>E-Mail</th>
+						<td>
+							<input type="text" name="email" required>
+						</td>
+					</tr>
+					<tr>
+						<th>비밀번호</th>
+						<td>
+							<input type="password" name="passwd" required>
+						</td>
+					</tr>
+					<tr>
+						<th>주소</th>
+						<td>
+							<input type="text" name="address" required>
+						</td>
+					</tr>
+					<tr>
+						<td colspan="2" class="align_center">
+							<input type="submit" value="등록">
+							<input type="button" value="취소">
+						</td>
+					</tr>
+				</table>
+			</form>
+		</div>
+	</section>
+	
+	<!-- 개별 페이지의 자바스크립트 영역 -->
+	<th:block layout:fragment="myScript">
+		<script>
+		
+		</script>
+	</th:block>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
