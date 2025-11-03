@@ -3,6 +3,7 @@ package com.itwillbs.test5.item.dto;
 import java.time.LocalDateTime;
 
 import com.itwillbs.test5.item.constant.ItemCategory;
+import com.itwillbs.test5.item.constant.ItemSellStatus;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotBlank;
@@ -45,6 +46,10 @@ public class ItemDTO {
 	// enum 타입 검증 시 널스트링("") 전달되면 null 값으로 취급됨
 	@NotNull(message = "상품카테고리는 필수 선택입니다!")
 	private ItemCategory category; // 상품카테고리(enum)
+	
+	// enum 타입 검증 시 널스트링("") 전달되면 null 값으로 취급됨
+	@NotNull(message = "상품카테고리는 필수 선택입니다!")
+	private ItemSellStatus sellStatus; // 상품판매상태(enum)
 	
 	private LocalDateTime regTime; // 상품등록일시
 	private LocalDateTime updateTime; // 상품정보수정일시

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.itwillbs.test5.member.dto.MemberDTO;
+import com.itwillbs.test5.member.service.MemberService;
 
 import jakarta.validation.Valid;
 import lombok.extern.log4j.Log4j2;
@@ -20,7 +21,14 @@ import lombok.extern.log4j.Log4j2;
 @RequestMapping("/members")
 @Log4j2
 public class MemberController {
-
+	// 객체 자동 주입을 위해 final 필드로 선언 및 생성자를 통해 주입
+	private final MemberService memberService;
+	
+	public MemberController(MemberService memberService) {
+		super();
+		this.memberService = memberService;
+	}
+	// =============================================================================================
 	// 뷰페이지로 포워딩 시 입력값 검증으로 활용되는 DTO 객체(빈 객체)를 Model 객체에 담아 함께 전달
 	@GetMapping("/regist")
 	public String registForm(Model model) {
@@ -48,6 +56,11 @@ public class MemberController {
 			// Model 객체를 활용하여 MemberDTO 객체나 BindingResult 객체를 별도로 저장하지 않아도 오류 정보가 자동으로 뷰페이지로 전송됨
 			return "/member/member_regist_form";
 		}
+		
+		// MemberService - registMember() 메서드 호출하여 회원가입 처리 요청
+		// => 파라미터 : MemberDTO 객체   리턴타입 : void
+		memberService.registMember(memberDTO);
+		
 		
 		// 가입 성공 시 메인페이지로 리다이렉트
 		return "redirect:/";
