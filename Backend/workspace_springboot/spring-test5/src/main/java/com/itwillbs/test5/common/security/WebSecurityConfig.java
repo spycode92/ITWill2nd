@@ -30,6 +30,7 @@ public class WebSecurityConfig {
 				// ---------- 요청에 대한 접근 허용 여부 등의 요청 경로에 대한 권한 설정 ---------
 				.authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
 //					.anyRequest().permitAll() // 모든 요청에 대해 접근 허용
+//					.requestMatchers("/items/**").authenticated() // "/items" 로 시작하는 하위 경로 포함 모든 경로를 제어 
 					.requestMatchers("/items/regist").authenticated() // 상품등록 경로는 로그인 한(인증된) 사용자만 접근 가능
 					.requestMatchers("/", "/members/regist").permitAll() // 메인페이지, 회원가입 경로는 모든 사용자가 접근 가능
 					// 정적 리소스 경로(static/js, static/css, static/images 등)를 시큐리티 필터링 대상에서 모두 허용
@@ -44,7 +45,8 @@ public class WebSecurityConfig {
 					// => 이 과정에서 UserDetailsService(또는 구현체) 객체의 loadByUsername() 메서드가 자동으로 호출됨
 					.usernameParameter("email") // 로그인 과정에서 사용할 사용자명(username)을 이메일(email)로 지정(기본값 : username)
 					.passwordParameter("passwd") // 로그인 과정에서 사용할 패스워드 지정(기본값 : password)
-					.defaultSuccessUrl("/", true) // 로그인 성공 시 항상 리디렉션 할 기본 URL 설정
+//					.defaultSuccessUrl("/", true) // 로그인 성공 시 항상 리디렉션 할 기본 URL 설정
+					.successHandler(new CustomAuthenticationSuccessHandler()) // 로그인 성공 시 별도의 추가 작업을 처리할 핸들러 지정
 					.permitAll() // 로그인 경로 관련 요청 주소를 모두 허용
 				)
 				// ---------- 로그아웃 처리 설정 ---------
