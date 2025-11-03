@@ -40,7 +40,8 @@ public class MemberController {
 		
 		// BindingResult 객체의 각 메서드를 호출하여 입력값 검증 결과 얻어낼 수 있음 
 //		log.info(">>>>>>>>>>>>>> bindingResult.hasErrors : " + bindingResult.hasErrors()); // 검증 오류 발생 여부(true/false) 리턴
-//		log.info(">>>>>>>>>>>>>> bindingResult.getAllErrors : " + bindingResult.getAllErrors()); // 전체 검증 결과에 대한 정보 리턴
+		log.info(">>>>>>>>>>>>>> bindingResult.getAllErrors : " + bindingResult.getAllErrors()); // 전체 검증 결과에 대한 정보 리턴
+		// ex) >>>>>>>>>>>>>> bindingResult.getAllErrors : [Field error in object 'memberDTO' on field 'email': rejected value [1]; codes [Email.memberDTO.email,Email.email,Email.java.lang.String,Email]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [memberDTO.email,email]; arguments []; default message [email],[Ljakarta.validation.constraints.Pattern$Flag;@66ec1b72,.*]; default message [이메일 형식에 맞게 입력해 주세요!], Field error in object 'memberDTO' on field 'name': rejected value [홍]; codes [Length.memberDTO.name,Length.name,Length.java.lang.String,Length]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [memberDTO.name,name]; arguments []; default message [name],20,2]; default message [이름은 2 ~ 20자리 필수!]]
 		
 		// 입력값 검증 결과가 true 일 때(검증 오류 발생 시) 다시 입력폼으로 포워딩
 		if(bindingResult.hasErrors()) {
