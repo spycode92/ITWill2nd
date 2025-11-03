@@ -11,6 +11,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 // 회원 권한을 관리하는 엔티티(= 공통코드 테이블의 상위공통코드명 "MEMBER_ROLE" 에 대한 공통코드 관리)
@@ -23,6 +24,7 @@ import lombok.Setter;
 @Table(name = "member_role") // name 속성 생략 가능
 @Getter
 @Setter
+@NoArgsConstructor
 public class MemberRole {
 	@Id @GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;

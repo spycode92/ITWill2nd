@@ -5,6 +5,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
@@ -42,9 +44,31 @@ public class WebSecurityConfig {
 					// => 이 과정에서 UserDetailsService(또는 구현체) 객체의 loadByUsername() 메서드가 자동으로 호출됨
 					.usernameParameter("email") // 로그인 과정에서 사용할 사용자명(username)을 이메일(email)로 지정(기본값 : username)
 					.passwordParameter("passwd") // 로그인 과정에서 사용할 패스워드 지정(기본값 : password)
+					.defaultSuccessUrl("/", true) // 로그인 성공 시 항상 리디렉션 할 기본 URL 설정
 					.permitAll() // 로그인 경로 관련 요청 주소를 모두 허용
 				)
+				// ---------- 로그아웃 처리 설정 ---------
+				.logout(logoutCustomizer -> logoutCustomizer
+					.logoutUrl("/members/logout") // 로그아웃 요청 URL 지정(주의! POST 방식 요청으로 취급함)
+					.logoutSuccessUrl("/") // 로그아웃 성공 후 리디렉션 할 URL 지정
+					.permitAll()
+				)
+				// ---------- 자동 로그인 처리 설정(쿠키 활용 => 브라우저 개발자 도구(크롬 기준) Application - Cookies 항목에서 확인) ---------\
+				.rememberMe(rememberMeCustormizer -> rememberMeCustormizer
+					.rememberMeParameter("remember-me") // 자동 로그인 수행을 위한 체크박스 파라미터명 지정(체크 여부 자동으로 판별)
+					.key("my-fixed-secret-key") // 서버 재시작해도 이전 로그인에서 사용했던 키 동일하게 사용
+					.tokenValiditySeconds(60 * 60 * 24) // 자동 로그인 토큰 유효기간 설정(기본값 14일 => 1일로 변경)
+				)
 				.build();
+	}
+	
+	// ===================================================
+	// 사용자 인증 과정에서 패스워드 인코딩 시 사용될 단방향 암호화 인코더 객체 생성 메서드 정의
+	// => 생략 시 패스워드 인코딩에 사용할 객체를 선택하지 못해 예외 발생
+	//    (java.lang.IllegalArgumentException: Given that there is no default password encoder configured, each password must have a password encoding prefix. Please either prefix this password with '{noop}' or set a default password encoder in `DelegatingPasswordEncoder`.)
+	@Bean
+	public PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
 	}
 }
 
