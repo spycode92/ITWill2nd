@@ -3,11 +3,14 @@ package com.itwillbs.test5.member.dto;
 import java.time.LocalDate;
 
 import org.hibernate.validator.constraints.Length;
+import org.modelmapper.ModelMapper;
 
-import jakarta.persistence.Column;
+import com.itwillbs.test5.item.dto.ItemDTO;
+import com.itwillbs.test5.member.entity.Member;
+
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -54,6 +57,61 @@ public class MemberDTO {
 	private String address2; // 상세 주소(검증 조건 없음)
 	
 	private LocalDate regDate; // 가입일자(엔티티 생성 시 자동 등록)
+	// ===================================================================
+	// Item 엔티티 <-> ItemDTO 간의 변환 처리
+	// 1) 파라미터 생성자 정의(빌더패턴 생략 가능)
+//	@Builder
+//	public MemberDTO(Long id, String email, String passwd, String name, String postCode, String address1, String address2, LocalDate regDate) {
+//		this.id = id;
+//		this.email = email;
+//		this.passwd = passwd;
+//		this.name = name;
+//		this.postCode = postCode;
+//		this.address1 = address1;
+//		this.address2 = address2;
+//		this.regDate = regDate;
+//	}
+	
+	// 2) Entity -> DTO 로 변환하는 fromEntity() 메서드 정의
+	// => 파라미터 : 엔티티 객체   리턴타입 : DTO 타입
+	// => 단, DTO 객체가 없는 상태에서 Member 엔티티로부터 객체를 생성해야하므로 MemberDTO 내에서 static 메서드로 정의
+	//    (또는 Member 엔티티 클래스에서 정의해도 된다!)
+//	public static MemberDTO fromEntity(Member member) {
+//		return MemberDTO.builder()
+//				.id(member.getId())
+//				.name(member.getName())
+//				.email(member.getEmail())
+//				.passwd(member.getPasswd())
+//				.postCode(member.getPostCode())
+//				.address1(member.getAddress1())
+//				.address2(member.getAddress2())
+//				.regDate(member.getRegDate())
+//				.build();
+//	}
+	
+	// 3) DTO -> Entity 로 변환하는 toEntity() 메서드 정의(생략)
+//	public Member toEntity() {
+//		return Item.builder()
+//		// 생략
+//	}
+	// -----------------------------------------
+	// DTO <-> Entity 변환 메서드를 개발자가 직접 구현하지 않고 ModelMapper 라이브러리를 활용하여 간편하게 구현 가능
+	// 단, 기본적으로 두 클래스간의 필드명이 동일한 필드끼리만 자동으로 변환 처리됨
+	private static ModelMapper modelMapper = new ModelMapper();
+	
+	// ModelMapper 객체의 map() 메서드를 활용하여 객체 변환 수행
+	// 1) MemberDTO -> Member(엔티티) 타입으로 변환하는 toEntity() 메서드 정의
+	public Member toEntity() {
+		// 첫번째 파라미터 : 변환 전 원본 객체
+		// 두번째 파라미터 : 변환 할 대상 클래스(.class 포함)
+		return modelMapper.map(this, Member.class);
+	}
+	
+	// 2) Entity -> DTO 로 변환하는 fromEntity() 메서드 정의
+	public static MemberDTO fromEntity(Member member) {
+		return modelMapper.map(member, MemberDTO.class);
+	}
+	
 }
 
 

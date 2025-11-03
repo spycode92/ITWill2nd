@@ -4,11 +4,15 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
 import com.itwillbs.test5.common.entity.CommonCode;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -23,6 +27,10 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
+// @CreateDate 등의 어노테이션을 활용하여 날짜 정보 등을 자동으로 등록하기 위한 JPA 감사(Auditing) 기능 사용 시
+// 감사 기능이 동작할 클래스(엔티티 또는 공통감사엔티티)에 @EntityListeners 어노테이션 추가하여 감사 대상 클래스로 지정하고
+// 스프링 메인 클래스(XXXApplication) 또는 스프링 설정용 클래스에 @EnableJpaAuditing 어노테이션 추가 필요
+@EntityListeners(AuditingEntityListener.class)
 public class Member {
 	@Id @GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
@@ -48,6 +56,11 @@ public class Member {
 	@Column(nullable = false, length = 100)
 	private String address2; // 상세 주소
 	
+	// ---------------------------------------------------------------------------------------
+	// JPA 에서 특정 날짜 및 시각(또는 다른 형식도 가능) 필드값을 자동으로 생성하려면
+	// JPA 감사(Auditing) 기능 사용을 위한 어노테이션 조합을 통해 자동 등록 필드로 지정
+	// => 자동 등록될 필드가 위치한 클래스(엔티티)와 스프링 메인 클래스에 어노테이션 설정 추가 필요
+	@CreatedDate // 엔티티 최초 생성 시점에 날짜 및 시각이 자동으로 등록되는 필드로 설정
 	private LocalDate regDate; // 가입일자(엔티티 생성 시 자동 등록)
 	
 	// ---------------------------------------------------------------
@@ -63,6 +76,13 @@ public class Member {
 	
 	// 사용자 권한을 추가하는 addRole() 메서드 정의
 	public void addRole(CommonCode role) {
+		// MemberRole 인스턴스 생성 시 생성자 파라미터로 현재 엔티티(Member)와 공통코드 엔티티(CommonCode) 전달
+		MemberRole memberRole = new MemberRole(this, role);
+		// 사용자 권한 목록 객체(List<MemberRole>)에 1개의 권한이 저장된 MemberRole 엔티티 추가
+		roles.add(memberRole);
+	}
+	// 위의 메서드 인식 불가 버그로 인해 새로운 메서드로 추가(동일한 코드)
+	public void addMemberRole(CommonCode role) {
 		// MemberRole 인스턴스 생성 시 생성자 파라미터로 현재 엔티티(Member)와 공통코드 엔티티(CommonCode) 전달
 		MemberRole memberRole = new MemberRole(this, role);
 		// 사용자 권한 목록 객체(List<MemberRole>)에 1개의 권한이 저장된 MemberRole 엔티티 추가
