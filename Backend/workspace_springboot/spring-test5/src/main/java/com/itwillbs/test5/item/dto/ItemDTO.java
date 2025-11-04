@@ -1,9 +1,13 @@
 package com.itwillbs.test5.item.dto;
 
 import java.time.LocalDateTime;
+import java.util.List;
+
+import org.modelmapper.ModelMapper;
 
 import com.itwillbs.test5.item.constant.ItemCategory;
 import com.itwillbs.test5.item.constant.ItemSellStatus;
+import com.itwillbs.test5.item.entity.Item;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotBlank;
@@ -53,6 +57,20 @@ public class ItemDTO {
 	
 	private LocalDateTime regTime; // 상품등록일시
 	private LocalDateTime updateTime; // 상품정보수정일시
+	
+	// 상품 이미지 목록 정보 저장할 List 타입 선언
+	private List<ItemImgDTO> itemImgDTOList;
+	// ===========================================================
+	// DTO <-> Entity 변환 메서드 구현
+	private static ModelMapper modelMapper = new ModelMapper();
+	
+	public Item toEntity() {
+		return modelMapper.map(this, Item.class);
+	}
+	
+	public static ItemDTO fromEntity(Item item) {
+		return modelMapper.map(item, ItemDTO.class);
+	}
 }
 
 
