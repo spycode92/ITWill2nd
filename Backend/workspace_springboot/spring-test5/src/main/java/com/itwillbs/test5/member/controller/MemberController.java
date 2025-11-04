@@ -2,6 +2,9 @@ package com.itwillbs.test5.member.controller;
 
 import java.util.regex.Pattern;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -13,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.itwillbs.test5.member.dto.MemberDTO;
+import com.itwillbs.test5.member.dto.MemberLoginDTO;
 import com.itwillbs.test5.member.service.MemberService;
 
 import jakarta.validation.Valid;
@@ -76,9 +80,53 @@ public class MemberController {
 		model.addAttribute("rememberId", rememberId);
 		return "/member/member_login_form";
 	}
+	// =====================================================================
+	// 사용자 정보 조회를 위해 매핑 메서드 파라미터로 Authentication 객체를 주입받아 인증 정보에 접근 가능(사용자명(= email) 알아낼 수 있음)
+	// 또는 @AuthenticationPrincipal 어노테이션을 활용하여 UserDetails 객체(= MemberLoginDTO)를 바로 주입받을 수도 있음
+	@GetMapping("/profile")
+	public String showMemberProfile(Authentication authentication, @AuthenticationPrincipal MemberLoginDTO memberLoginDTO, Model model) {
+		// Authentication 객체는 SecurityContextHolder 객체로부터 얻어올 수도 있다!
+//		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//		log.info(">>>>>>>>>>>>>> 현재 로그인 한 사용자 : " + authentication.getName()); // 사용자명(username = 현재 email 사용중)
+//		log.info(">>>>>>>>>>>>>> UserDetails 정보 : " + authentication.getPrincipal()); // 사용자의 정보를 관리하는 UserDetails 객체(= 현재 MemberLoginDTO 가 구현체로 사용중)
+//		log.info(">>>>>>>>>>>>>> 권한 목록 정보 : " + authentication.getAuthorities()); // 권한 목록 리스트
+//		log.info(">>>>>>>>>>>>>> 기타 상세 정보 : " + authentication.getDetails()); // IP 주소 등
+		
+		String email = authentication.getName();
+		
+		// 참고) UserDetails 객체는 MemberLoginDTO 타입으로 다운캐스팅 가능
+//		MemberLoginDTO memberLoginDTO = (MemberLoginDTO)authentication.getPrincipal();
+		// => 단, 매핑 메서드 선언부에 @AuthenticationPrincipal MemberLoginDTO memberLoginDTO 형태 파라미터 선언 시 자동 주입됨
+//		log.info(">>>>>>>>>>>>>> memberLoginDTO : " + memberLoginDTO);
+		// UserDetails 객체(= MemberLoginDTO)의 getUsername() 메서드가 email 주소를 담고 있으므로 Authentication 객체의 getName() 과 동일
+//		log.info(">>>>>>>>>>>>>> memberLoginDTO : " + memberLoginDTO.getUsername());
+//		log.info(">>>>>>>>>>>>>> memberLoginDTO : " + memberLoginDTO.getEmail());
+		// -----------------------------------------------------------------------------
+		MemberDTO memberDTO = memberService.getMember(email);
+		log.info(">>>>>>>>>>>>>> memberDTO : " + memberDTO);
+		// -----------------------------------------------------------------------------
+		model.addAttribute("memberDTO", memberDTO);
+		return "/member/member_profile";
+	}
 	
 	
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

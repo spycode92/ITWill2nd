@@ -1,5 +1,6 @@
 package com.itwillbs.test5.member.service;
 
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -8,6 +9,7 @@ import com.itwillbs.test5.common.entity.CommonCode;
 import com.itwillbs.test5.common.service.CommonCodeService;
 import com.itwillbs.test5.member.dto.MemberDTO;
 import com.itwillbs.test5.member.entity.Member;
+import com.itwillbs.test5.member.entity.MemberRole;
 import com.itwillbs.test5.member.repository.MemberRepository;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -56,6 +58,19 @@ public class MemberService {
 		if(resultMember == null) {
 			throw new IllegalStateException("회원 등록 실패!");
 		}
+	}
+	
+	
+	public MemberDTO getMember(String email) {
+		Member member = memberRepository.findByEmail(email)
+				.orElseThrow(() -> new UsernameNotFoundException(email + " 에 해당하는 회원이 없습니다!"));
+		
+		for(MemberRole memberRole : member.getRoles()) {
+			log.info(">>>>>>>>>>>>>> 사용자 권한 목록 : " + memberRole.getRole().getCommonCode());
+		}
+		
+		
+		return MemberDTO.fromEntity(member);
 	}
 	
 	

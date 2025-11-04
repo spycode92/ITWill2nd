@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+		xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+		layout:decorate="~{layout/layout}">
+<head>
+	<!-- 개별페이지 CSS 영역 -->
+	<th:block layout:fragment="style">
+		<style>
+			section h3 {
+				text-align: center;
+			}
+		
+			.align_center {
+				text-align: center;
+			}
+		</style>
+	</th:block>
+</head>	
+<body>
+	<section layout:fragment="content">
+		<h3>회원 가입</h3>
+		<div id="registForm">
+			<!-- 
+			
+			-->
+			<form th:action="@{/members/regist}" th:object="${memberDTO}" method="post">
+				<table border="1">
+					<tr>
+						<th>이름</th>
+						<td>
+							<!-- 입력값 검증 시 pattern 속성을 활용하여 정규표현식으로 클라이언트측의 입력값을 검증할 수 있음 -->
+<!-- 							<input type="text" name="name" pattern="^[가-힣A-Za-z]{2,20}$" title="한글,영문자 조합 2~20글자" required> -->
+							<!-- 스프링의 validation 기능을 활용하여 DTO 클래스를 통해 입력값 검증 제어 가능 -->
+<!-- 							<input type="text" name="name" required> -->
+							<!-- 입력요소 태그에 th:field 속성을 사용하여 해당 입력 요소에 DTO 객체의 필드 바인딩(= name 속성 생략 가능) -->
+							<input type="text" th:field="*{name}" required>
+							<!-- 
+							Validation Check 결과가 실패(오류 발생)일 경우 입력페이지로 다시 포워딩 됐을 때 실패한 항목에 대한 오류 처리 수행
+							th:if 활용하여 에러 발생 여부 체크(타임리프 내장객체 fields 의 hasErrors() 메서드로 검사할 필드명 전달)
+							th:errors 속성 활용하여 출력할 에러메세지가 포함되어 있는 객체의 필드명 지정(단순 텍스트 직접 입력 불가!)
+							-->
+							<div class="error_msg" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+						</td>
+					</tr>
+					<tr>
+						<th>E-Mail</th>
+						<td>
+							<input type="text" th:field="*{email}" required>
+							<div class="error_msg" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+						</td>
+					</tr>
+					<tr>
+						<th>비밀번호</th>
+						<td>
+							<input type="password" th:field="*{passwd}" required>
+							<div class="error_msg" th:if="${#fields.hasErrors('passwd')}" th:errors="*{passwd}"></div>
+						</td>
+					</tr>
+					<tr>
+						<th>주소</th>
+						<td>
+							<input type="text" th:field="*{postCode}" placeholder="우편번호" ><br>
+<!-- 							<div class="error_msg" th:if="${#fields.hasErrors('postCode')}" th:errors="*{postCode}"></div> -->
+							<input type="text" th:field="*{address1}" placeholder="기본주소" ><br>
+<!-- 							<div class="error_msg" th:if="${#fields.hasErrors('address1')}" th:errors="*{address1}"></div> -->
+							<input type="text" th:field="*{address2}" placeholder="상세주소" >
+							<div class="error_msg" th:if="${#fields.hasErrors('postCode')} or ${#fields.hasErrors('address1')}">
+								<span th:each="err : ${#fields.hasErrors('postCode')}" th:errors="*{postCode}"></span>
+								<span th:each="err : ${#fields.hasErrors('address1')}" th:errors="*{address1}"></span>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td colspan="2" class="align_center">
+							<input type="submit" value="등록">
+							<input type="button" value="취소">
+						</td>
+					</tr>
+				</table>
+			</form>
+		</div>
+	</section>
+	
+	<!-- 개별 페이지의 자바스크립트 영역 -->
+	<th:block layout:fragment="myScript">
+		<script>
+		
+		</script>
+	</th:block>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

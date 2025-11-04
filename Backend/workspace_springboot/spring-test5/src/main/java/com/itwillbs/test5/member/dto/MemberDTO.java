@@ -1,12 +1,14 @@
 package com.itwillbs.test5.member.dto;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import org.hibernate.validator.constraints.Length;
 import org.modelmapper.ModelMapper;
 
 import com.itwillbs.test5.item.dto.ItemDTO;
 import com.itwillbs.test5.member.entity.Member;
+import com.itwillbs.test5.member.entity.MemberRole;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
