@@ -60,16 +60,33 @@ public class MemberService {
 		}
 	}
 	
-	
+	// 사용자 정보 조회
 	public MemberDTO getMember(String email) {
+		// MemberRepository - findByEmail() 메서드 호출하여 사용자 정보 조회(리턴타입 : Member)
 		Member member = memberRepository.findByEmail(email)
 				.orElseThrow(() -> new UsernameNotFoundException(email + " 에 해당하는 회원이 없습니다!"));
 		
-		for(MemberRole memberRole : member.getRoles()) {
-			log.info(">>>>>>>>>>>>>> 사용자 권한 목록 : " + memberRole.getRole().getCommonCode());
+		// ---------------------------------------------------------------------------------------------------------
+		// Member 엔티티 - MemberRole 엔티티 - CommonCode 엔티티 사이의 연관관계 설정에 따라
+		// Member 엔티티를 조회하더라도 MemberRole - CommonCode 에 해당하는 엔티티에 대한 조회는 즉시 이루어지지 않는다!
+		// 즉, Member 엔티티만 조회하고 Member 내의 연관관계에 있는 엔티티들은 조회를 수행하지 않는다!
+//		Hibernate: select m1_0.id,m1_0.address1,m1_0.address2,m1_0.email,m1_0.name,m1_0.passwd,m1_0.post_code,m1_0.reg_date from members m1_0 where m1_0.email=?
+		// => members 테이블만 조회가 일어남
+		// ---------------------------------------------------------------------------------------------------------
+		// 만약, Member 엔티티에 접근할 경우 Member 엔티티에서 접근해야하는 MemberRole 엔티티가 존재해야하므로
+		// 이 시점에 MemberRole 엔티티에 대한 조회가 수행된다! = 지연 로딩(LAZY LOADING 이라고 함)
+//		log.info(">>>>>>>>>>>>>> Member 엔티티 : " + member); // 이 시점에 List<MemberRole> 에 대한 조회를 위해 member_role 테이블의 조회가 수행됨
+//		Hibernate: select m1_0.id,m1_0.address1,m1_0.address2,m1_0.email,m1_0.name,m1_0.passwd,m1_0.post_code,m1_0.reg_date from members m1_0 where m1_0.email=?
+//		Hibernate: select r1_0.member_id,r1_0.id,r1_0.member_role_id from member_role r1_0 where r1_0.member_id=?
+		// => member 테이블에 대한 조회가 수행된 후 다시 member_role 테이블에 대한 조회가 수행됨
+		// ---------------------------------------------------------------------------------------------------------
+		// 만약, MemberRole 엔티티 내의 CommonCode 엔티티에 접근할 경우 
+		// 다시 CommonCode 엔티티에 대한 common_code 테이블 조회가 수행된다!
+		for(MemberRole role : member.getRoles()) {
+			log.info(">>>>>>>>>>>>>> CommonCode 엔티티 : " + role.getRole()); // 이 시점에 CommonCode 에 대한 조회를 위해 common_code 테이블의 조회가 수행됨 
 		}
-		
-		
+		// ---------------------------------------------------------------------------------------------------------
+		// Member 엔티티 -> MemberDTO 객체로 변환하여 리턴
 		return MemberDTO.fromEntity(member);
 	}
 	

@@ -20,10 +20,8 @@
 	<section layout:fragment="content">
 		<h3>상품 등록</h3>
 		<div id="registForm">
-			<!-- 
-			
-			-->
-			<form th:action="@{/items/regist}" th:object="${itemDTO}" method="post">
+			<!-- 파일 업로드를 위해 form 태그 enctype 설정 -->
+			<form th:action="@{/items/regist}" th:object="${itemDTO}" method="post" enctype="multipart/form-data">
 				<table border="1">
 					<tr>
 						<th>상품명</th>
@@ -84,6 +82,14 @@
 						</td>
 					</tr>
 					<tr>
+						<th>첨부파일<br>(최대5개)</th>
+						<td>
+							<input type="file" id="custom-file-input" name="itemImgFiles" accept="image/*" multiple>
+							<div id="imgPreviewArea"></div>
+							<div class="error_msg" id="fileErrorDiv"></div>
+						</td>
+					</tr>
+					<tr>
 						<td colspan="2" class="align_center">
 							<input type="submit" value="등록">
 							<input type="button" value="취소">
@@ -97,7 +103,49 @@
 	<!-- 개별 페이지의 자바스크립트 영역 -->
 	<th:block layout:fragment="myScript">
 		<script>
-		
+			$(function() {
+				// =====================================================================
+				// 파일 선택 요소의 change 이벤트 핸들링
+				$("#custom-file-input").change(function(event) {
+					// 파일 선택 요소에서 선택된 파일 목록 객체 가져오기
+					const files = event.target.files;
+					console.log(files);
+					// -------------------------------------------------
+					// 참고) 파일 목록에서 이미지 파일들만 필터링(미리보기 대상으로 이미지 파일만 선택하기 위함)
+					let imageFiles = Array.from(files).filter(f => f.type.startsWith("image/"));
+				
+					// 선택된 파일 갯수 제한(현재는 이미지 파일 목록만으로 제한)
+					// => x개를 초과하면 경고 출력 후 x개 파일을 제외한 나머지 파일 버림
+					const fileCountLimit = 5;
+					if(imageFiles.length > fileCountLimit) { // 파일 갯수가 5개보다 많을 경우
+						alert("최대 첨부 가능한 갯수 : " + fileCountLimit);
+						imageFiles = imageFiles.slice(0, fileCountLimit); // 0부터 파일 갯수만큼 남기고 버림
+						console.log(imageFiles); // 5개만 남은 목록 출력됨
+					}
+					// --------------------------------------------------
+					// 미리보기1) 이미지 프리뷰 영역 초기화
+					$("#imgPreviewArea").html("");
+					
+					// 기존 파일 선택 영역을 교체할 새로운 파일 목록 객체 변경에 사용되는 DataTransfer 객체 생성
+					let newFiles = new DataTransfer();
+					
+					// 이미지 파일 갯수만큼 반복문 수행
+					$.each(imageFiles, function(index, file) {
+						// 현재 반복중인 파일 1개를 새로운 DataTransfer 객체에 추가
+						newFiles.items.add(file);
+						// ------------------------
+						// 미리보기2) FileReader 객체 생성
+						let reader = new FileReader();
+					
+						// 미리보기3) FileReader 객체의 onload 이벤트 핸들링
+					});
+					// --------------------------------------------------
+					// 파일 선택 요소 객체의 files 속성에 접근하여 새로운 파일 목록 객체로 업데이트
+					$("#custom-file-input")[0].files = newFiles.files;
+					
+				});
+				// =====================================================================
+			});
 		</script>
 	</th:block>
 </body>
