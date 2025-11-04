@@ -105,7 +105,7 @@
 						<td>
 							<input type="file" id="custom-file-input" name="itemImgFiles" accept="image/*" multiple>
 							<div id="imgPreviewArea"></div>
-							<div class="error_msg" id="fileErrorDiv"></div>
+							<div class="error_msg" id="fileErrorDiv" th:text="${errorMessage}"></div>
 						</td>
 					</tr>
 					<tr>
@@ -123,6 +123,18 @@
 	<th:block layout:fragment="myScript">
 		<script>
 			$(function() {
+				// 첨부파일 선택하지 않고 등록 요청 시 서버로부터 전달받은 오류메세지를 자바스크립트로 출력
+// 				const msg = "${errorMessage}";
+// 				console.log("msg : " + msg);
+				// => 주의! 타임리프 템플릿 페이지에서 자바스크립트 사용 시
+				//    ${} 활용하여 서버로부터 전달받은 속성에 접근하려 할 경우
+				//    정상적으로 파싱이 되지 않고 ${} 기호가 단순 문자열로 취급됨
+				// => 이 때, 타임리프 객체{} 앞 뒤로 [[ 기호와 ]] 기호를 감싸면 정상적으로 파싱됨
+				const msg = "[[${errorMessage}]]";
+				if(msg && msg.trim() != "") {
+// 					console.log("msg : " + msg);
+					alert(msg);
+				}
 				// =====================================================================
 				// 파일 선택 요소의 change 이벤트 핸들링
 				$("#custom-file-input").change(function(event) {

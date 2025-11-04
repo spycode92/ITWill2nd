@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.itwillbs.test5.item.dto.ItemDTO;
+import com.itwillbs.test5.item.service.ItemImgService;
+import com.itwillbs.test5.item.service.ItemService;
 
 import jakarta.validation.Valid;
 import lombok.extern.log4j.Log4j2;
@@ -21,7 +23,14 @@ import lombok.extern.log4j.Log4j2;
 @RequestMapping("/items")
 @Log4j2
 public class ItemController {
+	private final ItemService itemService;
+	private final ItemImgService itemImgService;
 
+	public ItemController(ItemService itemService, ItemImgService itemImgService) {
+		this.itemService = itemService;
+		this.itemImgService = itemImgService;
+	}
+	// =============================================================================
 	@GetMapping("/regist")
 	public String registForm(Model model) {
 		model.addAttribute("itemDTO", new ItemDTO());
@@ -48,6 +57,13 @@ public class ItemController {
 			model.addAttribute("errorMessage", "최소 한 개 이상의 파일 선택 필수!");
 			return "/item/item_regist_form";
 		}
+		// -------------------------------------------------------------------------
+		// ItemService - registItem() 메서드 호출하여 상품정보 등록 요청
+		// => 파라미터 : ItemDTO 객체, 파일 목록 저장된 List<MultipartFile> 객체
+		//    리턴타입 : 상품번호 타입(Long)
+		Long itemId = itemService.registItem(itemDTO, itemImgFiles);
+		log.info(">>>>>>>>>>>>>>>> itemId : " + itemId);
+		
 		
 		return "redirect:/";
 	}
