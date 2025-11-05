@@ -1,5 +1,6 @@
 package com.itwillbs.test5.item.controller;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.springframework.stereotype.Controller;
@@ -7,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -39,7 +41,7 @@ public class ItemController {
 	
 	@PostMapping("/regist")
 	public String registItem(@ModelAttribute("itemDTO") @Valid ItemDTO itemDTO, BindingResult bindingResult, Model model,
-			@RequestParam("itemImgFiles") List<MultipartFile> itemImgFiles) {
+			@RequestParam("itemImgFiles") List<MultipartFile> itemImgFiles) throws IOException {
 		// 기본 상품 정보 입력값 검증
 //		log.info(">>>>>>>>>>>>>>>> bindingResult.hasErrors() : " + bindingResult.hasErrors());
 //		log.info(">>>>>>>>>>>>>>>> bindingResult.getAllErrors() : " + bindingResult.getAllErrors());
@@ -64,10 +66,21 @@ public class ItemController {
 		Long itemId = itemService.registItem(itemDTO, itemImgFiles);
 		log.info(">>>>>>>>>>>>>>>> itemId : " + itemId);
 		
-		
-		return "redirect:/";
+		// =========================================================================
+		// 상품 등록 완료 시 리턴받은 상품아이디(itemId) 값을 "/items" 경로에 결합하여
+		// 상품 상세정보 조회 페이지로 리다이렉트
+		return "redirect:/items/" + itemId;
 	}
 	
+	// =============================================================================
+	// "/items/xxx" 요청에 대한 상품 상세정보 조회
+	// => xxx 부분은 경로변수 itemId 로 처리
+	@GetMapping("/{itemId}")
+	public String itemDetail(@PathVariable("itemId") Long itemId, Model model) {
+		ItemDTO itemDTO = itemService.getItem(itemId);
+		model.addAttribute("itemDTO", itemDTO);
+		return "/items/item_detail";
+	}
 	
 	
 }
