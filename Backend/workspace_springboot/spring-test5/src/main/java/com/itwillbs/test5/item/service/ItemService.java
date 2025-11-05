@@ -34,7 +34,11 @@ public class ItemService {
 		// ItemRepository - save() 메서드 호출하여 상품 정보 INSERT
 		itemRepository.save(item); // INSERT 과정에서 PK 값(Long id)이 자동 생성된 후 엔티티에 자동으로 저장됨
 		
-		
+		// ----------------------------------------------------
+		// ItemImgService - registItemImg() 메서드 호출하여 상품 이미지(파일) 등록 요청
+		// => 파라미터 : Item 엔티티, 상품이미지(첨부파일) 목록 List 객체
+		itemImgService.registItemImg(item, itemImgFiles);
+		// ----------------------------------------------------
 		
 		return item.getId(); // 새로 등록된 엔티티의 id 값 리턴
 	}
