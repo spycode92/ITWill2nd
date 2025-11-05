@@ -79,7 +79,7 @@ public class ItemController {
 	public String itemDetail(@PathVariable("itemId") Long itemId, Model model) {
 		ItemDTO itemDTO = itemService.getItem(itemId);
 		model.addAttribute("itemDTO", itemDTO);
-		return "/items/item_detail";
+		return "/item/item_detail";
 	}
 	
 	

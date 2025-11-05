@@ -50,7 +50,7 @@ public class ItemService {
 	public ItemDTO getItem(Long itemId) {
 		Item item = itemRepository.findById(itemId)
 				.orElseThrow(() -> new EntityNotFoundException(itemId + " 번 상품이 존재하지 않습니다!"));
-		return 
+		return ItemDTO.fromEntity(item);
 	}
 	
 	
