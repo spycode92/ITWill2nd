@@ -21,6 +21,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotNull;
@@ -40,8 +41,16 @@ import lombok.ToString;
 @Setter
 @ToString
 @EntityListeners(AuditingEntityListener.class) // JPA 감사 기능을 활용하여 날짜 정보 등의 자동 등록에 활용
+// JPA 에서 사용할 오라클의 시퀀스 관련 설정
+@SequenceGenerator(
+	name = "ITEMS_SEQ_GENERATOR", // JPA 에서 사용하는 시퀀스 이름(DB 의 시퀀스 이름이 아님!)
+	sequenceName = "ITEMS_SEQ",   // 오라클에서 사용하는 시퀀스 이름
+	initialValue = 1,			  // 초기값(오라클 시퀀스의 start with 값과 동일)
+	allocationSize = 1			  // 증가값(오라클 시퀀스의 increment by 값과 동일)
+)
 public class Item {
-	@Id @GeneratedValue(strategy = GenerationType.AUTO)
+	@Id 
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "ITEMS_SEQ_GENERATOR") // 위에서 설정한 시퀀스 생성 이름 지정
 	@Column(updatable = false)
 	private Long id; // 상품번호
 	

@@ -17,6 +17,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
@@ -31,8 +32,15 @@ import lombok.ToString;
 // 감사 기능이 동작할 클래스(엔티티 또는 공통감사엔티티)에 @EntityListeners 어노테이션 추가하여 감사 대상 클래스로 지정하고
 // 스프링 메인 클래스(XXXApplication) 또는 스프링 설정용 클래스에 @EnableJpaAuditing 어노테이션 추가 필요
 @EntityListeners(AuditingEntityListener.class)
+@SequenceGenerator(
+	name = "MEMBERS_SEQ_GENERATOR", // JPA 에서 사용하는 시퀀스 이름(DB 의 시퀀스 이름이 아님!)
+	sequenceName = "MEMBERS_SEQ",   // 오라클에서 사용하는 시퀀스 이름
+	initialValue = 1,			  // 초기값(오라클 시퀀스의 start with 값과 동일)
+	allocationSize = 1			  // 증가값(오라클 시퀀스의 increment by 값과 동일)
+)
 public class Member {
-	@Id @GeneratedValue(strategy = GenerationType.AUTO)
+	@Id 
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "MEMBERS_SEQ_GENERATOR") // 위에서 설정한 시퀀스 생성 이름 지정
 	private Long id;
 
 	// 사용자 아이디는 이메일을 활용
