@@ -6,6 +6,11 @@
 		xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
 	<meta charset="UTF-8">
+	
+	<!-- CSRF 토큰값과 CSRF 헤더명 저장 -->
+	<meta name="_csrf_token" th:content="${_csrf.token}">
+	<meta name="_csrf_headerName" th:content="${_csrf.headerName}">
+	
 	<title>Insert title here</title>
 	<!-- 공통 CSS, JS 등의 리소스 불러오는 영역 -->
 	<link rel="stylesheet" th:href="@{/css/common.css}"/>

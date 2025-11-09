@@ -3,6 +3,7 @@ package com.itwillbs.test5.common.security;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -32,10 +33,14 @@ public class WebSecurityConfig {
 //					.anyRequest().permitAll() // 모든 요청에 대해 접근 허용
 //					.requestMatchers("/items/**").authenticated() // "/items" 로 시작하는 하위 경로 포함 모든 경로를 제어 
 					.requestMatchers("/items/regist").authenticated() // 상품등록 경로는 로그인 한(인증된) 사용자만 접근 가능
+					.requestMatchers(HttpMethod.GET, "/items", "/items/*").permitAll() // 상품 목록, 상세정보 조회 경로(GET)는 모든 사용자가 접근 가능
+					.requestMatchers(HttpMethod.DELETE, "/items/*").hasAuthority("ROLE_ADMIN") // 상품삭제 경로(DELETE, 경로변수 포함)는 관리자만 접근 가능
 					.requestMatchers("/", "/members/regist").permitAll() // 메인페이지, 회원가입 경로는 모든 사용자가 접근 가능
+					.requestMatchers("/members/**").authenticated() // 나머지 회원 관련 정보는 로그인 대상만 허용
 					// 정적 리소스 경로(static/js, static/css, static/images 등)를 시큐리티 필터링 대상에서 모두 허용
 					.requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
 					.anyRequest().authenticated() // 그 외의 모든 요청은 인증된 사용자만 접근 가능
+//					.anyRequest().denyAll() // 그 외의 모든 요청은 거부
 				)
 				// ---------- 로그인 처리 설정 ---------
 				.formLogin(formLogin -> formLogin

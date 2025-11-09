@@ -19,7 +19,8 @@
 <!-- 		<li sec:authorize="hasAuthority('ROLE_ADMIN')"><a th:href="@{/items/regist}">상품등록</a></li> -->
 		<li sec:authorize="hasAnyAuthority('ROLE_ADMIN','ROLE_ADMIN_SUB')"><a th:href="@{/items/regist}">상품등록</a></li>
 		<!-- 상품목록 메뉴는 로그인 한 사용자에게만 표시 -->
-		<li sec:authorize="isAuthenticated()"><a th:href="@{/items/list}">상품목록</a></li>
+<!-- 		<li sec:authorize="isAuthenticated()"><a th:href="@{/items/list}">상품목록</a></li> -->
+		<li sec:authorize="isAuthenticated()"><a th:href="@{/items}">상품목록</a></li>
 	</ul>
 	<ul class="nav-right">
 		<li sec:authorize="isAnonymous()">

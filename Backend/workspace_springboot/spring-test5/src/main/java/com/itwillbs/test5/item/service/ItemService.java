@@ -2,12 +2,15 @@ package com.itwillbs.test5.item.service;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.itwillbs.test5.item.dto.ItemDTO;
+import com.itwillbs.test5.item.dto.ItemImgDTO;
 import com.itwillbs.test5.item.entity.Item;
+import com.itwillbs.test5.item.entity.ItemImg;
 import com.itwillbs.test5.item.repository.ItemRepository;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -48,9 +51,31 @@ public class ItemService {
 	// ====================================================
 	// 상품 상세정보 조회
 	public ItemDTO getItem(Long itemId) {
+		// 상품 1개 정보 조회
 		Item item = itemRepository.findById(itemId)
 				.orElseThrow(() -> new EntityNotFoundException(itemId + " 번 상품이 존재하지 않습니다!"));
-		return ItemDTO.fromEntity(item);
+		
+		// Item -> ItemDTO 변환
+		ItemDTO itemDTO = ItemDTO.fromEntity(item);
+		
+		// Item 엔티티 조회 시 List<ItemImg> 타입 필드는 FetchType.LAZY 설정(지연로딩)에 의해 동시 조회가 일어나지 않는다! 
+		// 해당 데이터가 실제로 사용되는 시점에 조회가 일어나므로 추가적인 접근 코드를 통해 조회가 일어날 수 있도록 해야함
+		// => Item 엔티티의 getItemImgs() 메서드를 호출하여 이미지 리스트 가져옴
+		List<ItemImg> itemImgList = item.getItemImgs(); // 아직 실제 엔티티(ItemImg)를 사용하기 전이므로 조회가 일어나지 않는다!
+//		log.info(">>>>>>>>>>> itemImgList : " + itemImgList); // 해당 엔티티(ItemImg)에 직접 접근 시점인 이 코드가 실행될 때 실제 조회가 발생함!
+//		log.info(">>>>>>>>>>> 첨부파일 갯수 : " + itemImgList.size());
+		
+		// List<ItemImg> -> List<ItemImgDTO> 타입으로 변환하여 ItemDTO 객체에 저장
+		itemDTO.setItemImgDTOList(
+			// 1) List<ItemImg> 객체에 대한 자바 스트림 생성
+			itemImgList.stream()
+			// 2) 생성된 스트림 내의 각 요소에 존재하는 fromEntity() 메서드를 호출하여 ItemImg -> ItemImgDTO 객체로 변환
+			.map(itemImg -> ItemImgDTO.fromEntity(itemImg))
+			// 3) ItemImgDTO 를 List 객체에 담기
+			.collect(Collectors.toList())
+		);
+		
+		return itemDTO;
 	}
 	
 	

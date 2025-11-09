@@ -3,9 +3,12 @@ package com.itwillbs.test5.item.controller;
 import java.io.IOException;
 import java.util.List;
 
+import org.springframework.core.io.Resource;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -78,10 +81,28 @@ public class ItemController {
 	@GetMapping("/{itemId}")
 	public String itemDetail(@PathVariable("itemId") Long itemId, Model model) {
 		ItemDTO itemDTO = itemService.getItem(itemId);
+		log.info(">>>>>>>>>>>>>>> 상품정보 : " + itemDTO);
+		
 		model.addAttribute("itemDTO", itemDTO);
 		return "/item/item_detail";
 	}
 	
+	// =============================================================================
+	// "/items/xxx" 요청에 대한 상품 상세정보 조회
+	// => xxx 부분은 경로변수 itemId 로 처리
+	@DeleteMapping("/{itemId}")
+	public String itemDelete(@PathVariable("itemId") Long itemId, Model model) {
+		log.info(">>>>>>>>>>>>>>> delete itemId : " + itemId);
+		return "/item/item_detail";
+	}
+	
+	// =============================================================================
+	// 파일 다운로드 요청에 대한 처리(상품 이미지 아이디 경로변수 처리)
+	@GetMapping("/download/{itemImgId}")
+	public ResponseEntity<Resource> getFile(@PathVariable("itemImgId") Long itemImgId) {
+		log.info(">>>>>>>>>>>>>>> 상품 이미지 아이디 : " + itemImgId);
+		return null;
+	}
 	
 }
 
