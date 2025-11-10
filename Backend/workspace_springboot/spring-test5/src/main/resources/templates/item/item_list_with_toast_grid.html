@@ -1,48 +1,49 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-		xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-		layout:decorate="~{layout/layout}">
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/layout}">
 <head>
-	<!-- 개별페이지 CSS 영역 -->
-	<th:block layout:fragment="style">
-		<!-- Toast UI - Toast Grid 기본 CSS 로딩 -->
-		<link rel="stylesheet" href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
-		<style>
-			section h3 {
-				text-align: center;
-			}
-		
-			.align_center {
-				text-align: center;
-			}
-			
-			#imgPreviewArea {
-				display: flex;
-				flex-wrap: wrap;
-				gap: 10px;
-				width: 100%;
-			}
-			
-			.div-img-preview {
-				display: flex;
-				flex-direction: column;
-				align-items: center;			
-			}
-			
-			.img-preview {
-				width: 100px;
-				height: 100px;
-				display: block;
-			}
-		</style>
-	</th:block>
-</head>	
+<!-- 개별페이지 CSS 영역 -->
+<th:block layout:fragment="style">
+	<!-- Toast UI - Toast Grid 기본 CSS 로딩 -->
+	<link rel="stylesheet"
+		href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
+	<style>
+section h3 {
+	text-align: center;
+}
+
+.align_center {
+	text-align: center;
+}
+
+#imgPreviewArea {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+	width: 100%;
+}
+
+.div-img-preview {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.img-preview {
+	width: 100px;
+	height: 100px;
+	display: block;
+}
+</style>
+</th:block>
+</head>
 <body>
 	<section layout:fragment="content">
 		<h3>상품 목록</h3>
 		<div id="grid"></div>
 	</section>
-	
+
 	<!-- 개별 페이지의 자바스크립트 영역 -->
 	<th:block layout:fragment="myScript">
 		<!-- Toast UI - Toast Grid 기본 자바스크립트 로딩 -->
@@ -61,8 +62,8 @@
 						alert("상품 목록 요청 실패!");
 					}
 				});
-			});
-			
+			}); // document.ready 이벤트 핸들링 끝
+			// ===========================================================
 			function initToastGrid(data) {
 				console.log(data);
 				
@@ -85,13 +86,17 @@
 							header: "상품명",
 							name: "itemNm",
 							// 텍스트 데이터인 상품명을 직접 편집 가능하도록 editor 속성값을 "text" 로 지정
-							editor: "text"
+							editor: "text",
+							// 셀 정렬(좌측 정렬 = 기본값)
+							align: "left"
 						},
 						{
 							header: "가격",
 							name: "price",
 							// 가격에 대한 정렬 기능 활성화 및 기본 정렬 방식을 오름차순으로 설정
 							sortable: true,
+							// 셀 정렬(우측 정렬)
+							align: "right"
 						},
 						{
 							header: "재고수량",
@@ -104,6 +109,15 @@
 						{
 							header: "판매상태",
 							name: "sellStatus"
+						},
+						{
+							header: " ",
+							name: "btn",
+							width: 100, // 너비 설정
+							align: "center",
+							// formatter 속성에 화살표 함수를 활용하여 원하는 태그를 해당 셀에 삽입 가능(각 셀에 반복 삽입됨)
+							formatter: () => "<button type='button' class='btn-detail'>상세정보</button>"
+// 							formatter: (cellInfo) => "<button type='button' class='btn-detail' data-row='${cellInfo.rowKey}'>상세정보</button>"
 						}
 					],
 					// data 속성값으로 그리드에 표시될 실제 데이터가 저장된 JSON 객체 지정
@@ -115,7 +129,24 @@
 				});
 				
 				grid.resetData(data);
-			}
+				
+				// ----------------------------------------------------------------------
+				// Toast Grid 클릭 이벤트 핸들링(그리드 전체에 대한 클릭 이벤트 핸들링)
+				grid.on("click", (ev) => {
+// 					console.log(ev);
+					// 이벤트 객체(ev)의 columnName 속성을 활용하여 상세정보 버튼(name: "btn") 클릭 판별
+					if(ev.columnName == "btn") { // 실제 버튼이 아닌 버튼이 있는 컬럼을 클릭
+						// 이벤트 객체의 rowKey 속성에 접근하면 그리드 객체가 관리하는 행번호(상품아이디 아님!)에 접근 가능
+// 						console.log("ev.rowKey : " + ev.rowKey);
+						// 그리드 객체의 getRow() 메서드 파라미터로 rowKey 값을 전달하면 해당 로우데이터에 접근 가능
+						const rowData = grid.getRow(ev.rowKey);
+// 						console.log(rowData); // {id: 21, itemNm: '상품10', price: 100000, stockQty: 10, category: 'CLOTHING', …}
+						
+						// 상품 아이디(id 값)를 활용하여 상세정보 조회 요청 전송(AJAX 아님!)
+						location.href = "/items/" + rowData.id;
+					}
+				});
+			} // initToastGrid 함수 끝
 		</script>
 	</th:block>
 </body>

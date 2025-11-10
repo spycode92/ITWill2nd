@@ -10,6 +10,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.itwillbs.test5.item.constant.ItemCategory;
 import com.itwillbs.test5.item.constant.ItemSellStatus;
+import com.itwillbs.test5.item.dto.ItemDTO;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -23,6 +24,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -100,6 +102,18 @@ public class Item {
 		this.stockQty = stockQty;
 		this.category = category;
 		this.sellStatus = sellStatus;
+	}
+
+	// ---------------------------------------------------------
+	// 상품 정보 수정(UPDATE)을 위한 메서드 추가 정의
+	// => 파라미터로 전달받은 ItemDTO 에 저장된 값들을 현재 엔티티 필드에 저장
+	public void changeItem(@Valid ItemDTO itemDTO) {
+		this.itemNm = itemDTO.getItemNm();
+		this.itemDetail = itemDTO.getItemDetail();
+		this.price = itemDTO.getPrice();
+		this.stockQty = itemDTO.getStockQty();
+		this.category = itemDTO.getCategory();
+		this.sellStatus = itemDTO.getSellStatus();
 	}
 	
 	

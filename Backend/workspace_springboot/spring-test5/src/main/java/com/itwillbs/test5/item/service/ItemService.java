@@ -95,6 +95,21 @@ public class ItemService {
 		return itemDTO;
 	}
 	
+	// ======================================================
+	// 상품 정보 수정
+	@Transactional
+	public void modifyItem(@Valid ItemDTO itemDTO) {
+		// 수정할 상품 엔티티 조회하여 Item 엔티티 타입으로 리턴받기
+		Long itemId = itemDTO.getId();
+		Item item = itemRepository.findById(itemId)
+						.orElseThrow(() -> new EntityNotFoundException(itemId + " 번 상품이 존재하지 않습니다!"));
+		
+		// 상품 수정을 위해 Item 객체(엔티티)에서 필드값을 변경하는 메서드를 별도로 정의하여
+		// 변경할 값이 저장된 객체 등을 전달받아 실제 엔티티의 필드값 변경 시
+		// 더티 체킹에 의해 자동으로 UPDATE 수행됨 => 트랜잭션 적용 필수!
+		item.changeItem(itemDTO);
+	}
+	
 	
 }
 

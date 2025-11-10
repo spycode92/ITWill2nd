@@ -40,11 +40,11 @@
 		<h3>상품 상세정보</h3>
 		<div id="registForm">
 			<!-- 파일 업로드를 위해 form 태그 enctype 설정 -->
-			<form th:action="@{/items/modify}" th:object="${itemDTO}" method="post" enctype="multipart/form-data">
-				<!-- 상품 아이디는 hidden 속성으로 포함(HTML5 의 data-xxx 속성으로 자바스크립트에서 접근할 상품 아이디 값 지정) -->
-				<!-- data-xxx 속성으로 지정한 값은 jQuery 의 $("객체명").data("속성명") 형태로 가져올 수 있음 -->
-				<!-- 주의! data-xxx 의 xxx 부분을 a-b 형식의 하이픈 사용했을 경우 Camel-case 형태로 접근해야함(ex. data-user-name = data("userName"))-->
+			<form th:action="@{/items}" th:object="${itemDTO}" method="post">
 				<input type="hidden" th:field="*{id}" th:data-id="*{id}" id="itemId">
+				<!-- 상품 정보 수정 요청은 "/items" 에 대한 PATCH 메서드 방식으로 요청을 전송해야함 -->
+				<!-- form 태그의 method 속성은 "post" 방식으로 지정하고 폼 내부에서 히든 필드로 "_method" 속성값에 "patch" 지정하여 전송 -->
+				<input type="hidden" name="_method" value="patch">
 				<table border="1">
 					<tr>
 						<th>상품명</th>

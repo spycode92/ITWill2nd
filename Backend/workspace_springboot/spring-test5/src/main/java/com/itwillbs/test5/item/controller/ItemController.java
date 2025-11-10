@@ -22,6 +22,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -220,6 +221,23 @@ public class ItemController {
 		}
 		
 		
+	}
+	// =============================================================================
+	// 상품 정보 수정 요청 - PATCH 메서드로 요청
+//	@PutMapping("") // 엔티티가 존재할 경우 수정, 존재하지 않을 경우 삽입(추가)할 때 주로 사용
+	@PatchMapping("") // 수정 용도로만 사용
+	public String modifyItem(@ModelAttribute("itemDTO") @Valid ItemDTO itemDTO, BindingResult bindingResult) {
+		// 입력값 검증 오류 시 포워딩 처리
+		if(bindingResult.hasErrors()) {
+			return "/item/item_detail";
+		}
+		// -----------------------------------------
+		// ItemService - modifyItem() 메서드 호출하여 상품 정보 수정 요청
+		// => 파라미터 : 상품 정보(ItemDTO 객체)
+		itemService.modifyItem(itemDTO);
+		
+		// 수정된 정보를 새로 요청하여 표시하도록 상품 상세정보 페이지로 리다이렉트(상품 아이디 경로 변수로 전달)
+		return "redirect:/items/" + itemDTO.getId();
 	}
 	
 }
