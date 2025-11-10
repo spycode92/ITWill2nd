@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+		xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+		layout:decorate="~{layout/layout}">
+<head>
+	<!-- 개별페이지 CSS 영역 -->
+	<th:block layout:fragment="style">
+		<!-- Toast UI - Toast Grid 기본 CSS 로딩 -->
+		<link rel="stylesheet" href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
+		<style>
+			section h3 {
+				text-align: center;
+			}
+		
+			.align_center {
+				text-align: center;
+			}
+			
+			#imgPreviewArea {
+				display: flex;
+				flex-wrap: wrap;
+				gap: 10px;
+				width: 100%;
+			}
+			
+			.div-img-preview {
+				display: flex;
+				flex-direction: column;
+				align-items: center;			
+			}
+			
+			.img-preview {
+				width: 100px;
+				height: 100px;
+				display: block;
+			}
+		</style>
+	</th:block>
+</head>	
+<body>
+	<section layout:fragment="content">
+		<h3>상품 목록</h3>
+		<div id="grid"></div>
+	</section>
+	
+	<!-- 개별 페이지의 자바스크립트 영역 -->
+	<th:block layout:fragment="myScript">
+		<!-- Toast UI - Toast Grid 기본 자바스크립트 로딩 -->
+		<script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
+		<script>
+		</script>
+	</th:block>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

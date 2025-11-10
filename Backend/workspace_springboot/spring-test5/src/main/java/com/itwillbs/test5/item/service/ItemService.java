@@ -49,6 +49,21 @@ public class ItemService {
 	}
 	
 	// ====================================================
+	// 상품 목록 조회
+	public List<ItemDTO> getItemList() {
+		List<Item> itemList = itemRepository.findAll();
+		
+		// List<Item> -> List<ItemDTO> 타입으로 변환하여 리턴
+		return itemList.stream() // 1) List<ItemImg> 객체에 대한 자바 스트림 생성
+				// 2) 생성된 스트림 내의 각 요소에 존재하는 fromEntity() 메서드를 호출하여 ItemImg -> ItemImgDTO 객체로 변환
+//				.map(item -> ItemDTO.fromEntity(item))
+				// 2번 코드에 대한 화살표 함수 호출 축약형 코드(= 메서드 참조(Method reference) 라고 함)
+				.map(ItemDTO::fromEntity)
+				// 3) ItemImgDTO 를 List 객체에 담기
+				.collect(Collectors.toList());
+	}
+	
+	// ====================================================
 	// 상품 상세정보 조회
 	public ItemDTO getItem(Long itemId) {
 		// 상품 1개 정보 조회
@@ -70,7 +85,9 @@ public class ItemService {
 			// 1) List<ItemImg> 객체에 대한 자바 스트림 생성
 			itemImgList.stream()
 			// 2) 생성된 스트림 내의 각 요소에 존재하는 fromEntity() 메서드를 호출하여 ItemImg -> ItemImgDTO 객체로 변환
-			.map(itemImg -> ItemImgDTO.fromEntity(itemImg))
+//			.map(itemImg -> ItemImgDTO.fromEntity(itemImg))
+			// 2번 코드에 대한 화살표 함수 호출 축약형 코드(= 메서드 참조(Method reference) 라고 함)
+			.map(ItemImgDTO::fromEntity)
 			// 3) ItemImgDTO 를 List 객체에 담기
 			.collect(Collectors.toList())
 		);
