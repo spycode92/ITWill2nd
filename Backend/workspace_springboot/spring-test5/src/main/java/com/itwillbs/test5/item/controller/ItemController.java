@@ -1,9 +1,17 @@
 package com.itwillbs.test5.item.controller;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,8 +24,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.itwillbs.test5.item.dto.ItemDTO;
+import com.itwillbs.test5.item.dto.ItemImgDTO;
 import com.itwillbs.test5.item.service.ItemImgService;
 import com.itwillbs.test5.item.service.ItemService;
 
@@ -28,6 +38,14 @@ import lombok.extern.log4j.Log4j2;
 @RequestMapping("/items")
 @Log4j2
 public class ItemController {
+	// 파일 업로드에 사용할 경로를 properties 파일에서 가져오기
+	// => 변수 선언부에 @Value("${프로퍼티속성명}") 형태로 선언
+	@Value("${file.uploadBaseLocation}")
+	private String uploadBaseLocation;
+	
+	@Value("${file.itemImgLocation}")
+	private String itemImgLocation;
+	
 	private final ItemService itemService;
 	private final ItemImgService itemImgService;
 
@@ -35,6 +53,7 @@ public class ItemController {
 		this.itemService = itemService;
 		this.itemImgService = itemImgService;
 	}
+	
 	// =============================================================================
 	@GetMapping("/regist")
 	public String registForm(Model model) {
@@ -98,9 +117,74 @@ public class ItemController {
 	
 	// =============================================================================
 	// 파일 다운로드 요청에 대한 처리(상품 이미지 아이디 경로변수 처리)
+	/*
+	 * 상품 이미지 다운로드를 서버측에서 직접 처리하기 위해 리턴타입을 ResponseEntity<Resource> 타입으로 지정
+	 * => ResponseEntity<T> 는 스프링MVC 에서 HTTP 응답을 직접 제어할 수 있도록 해주는 클래스
+	 * => 단순히 뷰 이름을 반환하는 것과 달리 HTTP 상태코드나 헤더, 바디 등을 모두 포함하여 응답 가능
+	 *    (바디에 실제 데이터를 포함할 수 있으며 데이터타입은 T 이다)
+	 * 
+	 * [ Resource(org.springframework.core.io) ] 
+	 * => 스프링에서 파일, 클래스패스 자원, URL, 입력스트림 등 다양한 외부 자원을 추상화하여 제공
+	 * => 주로, 파일을 직접 읽어서 스트림으로 전송할 때 사용함
+	 * => FileSystemResource, ClassPathResource 등의 구현체를 사용함
+	 * => 실제 파일을 Resource 타입으로 감싼 후 ResponseEntity<Resource> 타입으로 HTTP 응답 정보를 구성하여 응답 처리함
+	 */
 	@GetMapping("/download/{itemImgId}")
 	public ResponseEntity<Resource> getFile(@PathVariable("itemImgId") Long itemImgId) {
 		log.info(">>>>>>>>>>>>>>> 상품 이미지 아이디 : " + itemImgId);
+		
+		// ItemImgService - getItemImg() 메서드 호출하여 상품 이미지 1개 정보 조회 요청
+		// => 파라미터 : 상품이미지번호(itemImgId)   리턴타입 : ItemImgDTO(itemImgDTO)
+		ItemImgDTO itemImgDTO = itemImgService.getItemImg(itemImgId);
+		log.info(">>>>>>>>>>>>>>> 다운로드 할 이미지 정보 : " + itemImgDTO);
+		// ----------------------------------------------------------------------------
+//		try {
+			// [ 파일 다운로드 처리 ]
+			// => ResponseEntity<Resource> 타입 객체를 활용하여 HTTP 응답 데이터로 처리
+			// 1) 다운로드 할 파일 정보를 서버 상의 실제 업로드 디렉토리를 활용하여 가져오기
+			Path path = Paths.get(uploadBaseLocation, itemImgDTO.getImgLocation()) // 기본 경로와 파일별 상세경로를 결합하여 Path 객체 생성
+							.resolve(itemImgDTO.getImgName()) // 디렉토리에 실제 파일명 결합(get() 메서드 파라미터에 추가로 기술해도 됨)
+							.normalize();
+			System.out.println("path : " + path);
+			
+			// 2) 경로 및 파일 존재 여부 판별하고 실제로 파일에 접근 가능한지 여부도 확인
+			if(Files.notExists(path)) { // 경로 및 파일이 존재하지 않을 경우
+				throw new ResponseStatusException(HttpStatus.NOT_FOUND, "다운로드 할 파일이 존재하지 않습니다!");
+			} else if(!Files.isReadable(path)) { // 경로 및 파일은 존재하나, 파일 읽기 권한이 없는 경우
+				throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "파일 접근 권한이 없습니다!");
+			}
+			
+			// 3) 다운로드 할 파일 객체에 대한 Resource 객체 생성(파일을 Resource 객체로 포장)
+			// => 스프링의 Resource 인터페이스 구현체 중 URL 기반 리소스 추상화를 제공하는 UrlResource 객체 활용(지정한 경로상의 자원 관리)
+			//    로컬 파일만 처리 가능한 것이 아니라 HTTP, FTP 등의 원격 리소스도 다룰 수 있다!
+			Resource resource = new UrlResource(path.toUri()); // MalformedURLException 예외 처리 필요
+			
+			// 4) 파일의 MIME 타입(= 컨텐츠 타입) 설정
+			// 4-1) 실제 파일로부터 타입 알아내기
+			String contentType = Files.probeContentType(path); // IOException 예외 처리 필요
+			System.out.println("contentType : " + contentType);
+			
+			// 4-2) 컨텐츠 타입 조회 실패 시 기본 타입을 일반적인 바이너리 파일 타입으로 강제 고정
+			if(contentType == null) {
+//				contentType = "application/octet-stream";
+				// 스프링의 라이브러리 중 컨텐츠 타입(MIME)을 enum 처럼 관리하는 MediaType 클래스 제공
+				contentType = MediaType.APPLICATION_OCTET_STREAM.toString();
+			}
+			System.out.println("contentType2 : " + contentType);
+			System.out.println("MediaType.APPLICATION_OCTET_STREAM.toString() : " + MediaType.APPLICATION_OCTET_STREAM.toString());
+			
+			// -----------------------------------------------------------
+			// 한글, 공백 등의 포함된 파일은 별도의 처리 필요
+			// -----------------------------------------------------------
+			// 5)
+			
+			
+//		} catch (MalformedURLException e) {
+//			e.printStackTrace();
+//			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "다운로드 할 파일이 존재하지 않습니다!");
+//		}
+		
+		
 		return null;
 	}
 	

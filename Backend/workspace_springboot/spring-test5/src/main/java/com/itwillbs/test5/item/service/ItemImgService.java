@@ -16,10 +16,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.itwillbs.test5.common.util.FileUtils;
+import com.itwillbs.test5.item.dto.ItemImgDTO;
 import com.itwillbs.test5.item.entity.Item;
 import com.itwillbs.test5.item.entity.ItemImg;
 import com.itwillbs.test5.item.repository.ItemImgRepository;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.extern.log4j.Log4j2;
 
@@ -112,6 +114,16 @@ public class ItemImgService {
 		// ItemImgRepository - saveAll() 메서드 호출하여 첨부파일 리스트를 한꺼번에 INSERT 요청
 		itemImgRepository.saveAll(itemImgList);
 		
+	}
+	
+	// 파일 다운로드를 위한 파일 정보 조회
+	public ItemImgDTO getItemImg(Long itemImgId) {
+//		ItemImg itemImg = itemImgRepository.findById(itemImgId)
+//				.orElseThrow(() -> new EntityNotFoundException("해당 이미지 파일이 존재하지 않습니다!"));
+//		return ItemImgDTO.fromEntity(itemImg);
+		
+		return ItemImgDTO.fromEntity(itemImgRepository.findById(itemImgId)
+				.orElseThrow(() -> new EntityNotFoundException("해당 이미지 파일이 존재하지 않습니다!")));
 	}
 
 }
