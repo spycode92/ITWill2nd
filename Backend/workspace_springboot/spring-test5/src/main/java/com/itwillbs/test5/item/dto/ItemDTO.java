@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.modelmapper.ModelMapper;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonFormat.Shape;
 import com.itwillbs.test5.item.constant.ItemCategory;
 import com.itwillbs.test5.item.constant.ItemSellStatus;
 import com.itwillbs.test5.item.entity.Item;
@@ -55,8 +57,18 @@ public class ItemDTO {
 	@NotNull(message = "상품카테고리는 필수 선택입니다!")
 	private ItemSellStatus sellStatus; // 상품판매상태(enum)
 	
+	// ----------------------------------------------------------
+	// DB 에서 조회되는 날짜 및 시각 관련 데이터가 자바의 LocalXXX 타입으로 저장될 경우
+	// JSON 문자열로 변환하면 날짜("yyyy-MM-dd") 와 시각("HH:mm:ss") 사이에 날짜와 시간을 구분하는 구분자 T 가 결합되어 변환(표시)됨
+	// 또한, 초에 해당하는 부분이 초, 밀리초, 마이크로초 등 자릿수가 매우 많이 출력됨
+	// => Jackson 라이브러리에서 제공하는 @JsonFormat 어노테이션을 통해 JSON 으로 변환될 날짜 및 시각의 포맷팅 자동 처리 가능
+	// => 기본 문법 : @JsonFormat(shape = Shape.데이터타입, pattern = "패턴문자열")
+	@JsonFormat(shape = Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
 	private LocalDateTime regTime; // 상품등록일시
+	
+	@JsonFormat(shape = Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
 	private LocalDateTime updateTime; // 상품정보수정일시
+	// ----------------------------------------------------------
 	
 	// 상품 이미지 목록 정보 저장할 List 타입 선언
 	private List<ItemImgDTO> itemImgDTOList;

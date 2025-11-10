@@ -98,20 +98,23 @@ public class ItemController {
 		return "redirect:/items/" + itemId;
 	}
 	// =============================================================================
-	// "/items"(GET) 요청에 대한 상품 목록 조회
-	// => Toast Grid 를 사용하여 그리드 형식 목록 출력하기 위해 목록 객체를 JSON 으로 변환하여 리턴
-	@ResponseBody
+	// "/items"(GET) 요청에 대한 상품 목록 조회 뷰페이지 포워딩
 	@GetMapping("")
+	public String getItemListForm() {
+		// ItemService - getItemList() 메서드 호출하여 상품 목록 조회 요청
+		// => 파라미터 : 없음   리턴타입 : List<ItemDTO>
+		return "/item/item_list_with_toast_grid";
+	}
+	
+	// AJAX 활용한 상품 목록 조회 요청
+	// Toast Grid 를 사용하여 그리드 형식 목록 출력하기 위해 목록 객체를 JSON 으로 변환하여 리턴
+	@ResponseBody
+	@GetMapping("/itemList")
 	public List<ItemDTO> getItemList() {
 		// ItemService - getItemList() 메서드 호출하여 상품 목록 조회 요청
 		// => 파라미터 : 없음   리턴타입 : List<ItemDTO>
 		return itemService.getItemList();
 	}
-	
-	
-	
-	
-	
 	
 	// =============================================================================
 	// "/items/xxx" 요청에 대한 상품 상세정보 조회
