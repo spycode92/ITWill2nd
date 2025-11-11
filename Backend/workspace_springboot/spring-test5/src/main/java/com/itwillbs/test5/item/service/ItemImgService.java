@@ -125,6 +125,19 @@ public class ItemImgService {
 		return ItemImgDTO.fromEntity(itemImgRepository.findById(itemImgId)
 				.orElseThrow(() -> new EntityNotFoundException("해당 이미지 파일이 존재하지 않습니다!")));
 	}
+	
+	// ----------------------------------------------------------------------------
+	// 상품 첨부파일 1개 엔티티 삭제
+	public ItemImgDTO removeItemImg(Long itemImgId) {
+		ItemImg itemImg = itemImgRepository.findById(itemImgId)
+				.orElseThrow(() -> new EntityNotFoundException("해당 이미지 파일이 존재하지 않습니다!"));
+		
+		itemImgRepository.delete(itemImg);
+		
+		return ItemImgDTO.fromEntity(itemImg);
+	}
+	
+	
 
 }
 

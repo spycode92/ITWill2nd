@@ -6,7 +6,9 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -241,6 +243,28 @@ public class ItemController {
 		
 		// 상품 목록 페이지로 리다이렉트(페이징 없음)
 		return "redirect:/items";
+	}
+	
+	// =============================================================================
+	// 상품 첨부파일 삭제 요청(AJAX) - DELETE 메서드
+	@ResponseBody
+	@DeleteMapping("/file/{id}")
+	public Map<String, Object> removeItemFile(@PathVariable("id") Long itemImgId) {
+		log.info(">>>>>>>> 삭제할 파일 아이디 : " + itemImgId);
+		
+		// ItemImgService - getItemImg() 메서드 호출하여 상품 첨부파일 1개 정보 조회 요청
+		// => 파라미터 : 상품 이미지 파일 아이디   리턴타입 : ItemImgDTO(itemImgDTO)
+//		ItemImgDTO itemImgDTO = itemImgService.getItemImg(itemImgId);
+//		log.info(">>>>>>>> 삭제할 파일 정보 : " + itemImgDTO);
+		
+		// ItemImgService - removeItemImg() 메서드 호출하여 상품 첨부파일 1개 정보(DB) 삭제 요청
+		// => 파라미터 : 상품 이미지 파일 아이디   리턴타입 : ItemImgDTO(itemImgDTO)
+//		ItemImgDTO itemImgDTO = itemImgService.removeItemImg(itemImgId);
+		
+		Map<String, Object> resultMap = new HashMap<>();
+		resultMap.put("result", true);
+		
+		return resultMap;
 	}
 	
 }

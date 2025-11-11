@@ -147,7 +147,8 @@
 									<img th:src="@{/images/download-icon.png}" class="img_btn" title="다운로드" />
 								</a>
 								<!-- 주의! 자바스크립트 함수 호출 시 타임리프 객체를 전달하려면 문자열 결합처럼 || 기호로 감싸야함 -->
-								<a href="javascript:void(0)" th:onclick="|deleteFile(${itemImgDTO.id})|">
+<!-- 								<a href="javascript:void(0)" th:onclick="|deleteFile(${itemImgDTO.id})|"> -->
+								<a href="javascript:void(0)" onclick="deleteFile(this)" th:data-id="${itemImgDTO.id}">
 									<img th:src="@{/images/delete-icon.png}" class="img_btn" title="삭제" />
 								</a>
 							</div>
@@ -313,9 +314,48 @@
 			}
 			
 			// ==========================================================
-			// 첨부파일 삭제
-			function deleteFile(itemImgId) {
-				console.log("itemImgId : " + itemImgId);
+			// 첨부파일 삭제(삭제 하이퍼링크 요소 객체 가져오기)
+			function deleteFile(elem) {
+// 				console.log(elem);
+
+				// 하이퍼링크 요소 객체(elem)에 포함된 데이터셋 id 값(data-id) 가져오기
+				const itemImgId = elem.dataset.id;
+// 				console.log("itemImgId : " + itemImgId);
+				
+				// layout.html 파일 meta 태그 항목으로 포함된 CSRF 관련값 가져오기 
+				const csrfToken = "[[${_csrf.token}]]";
+				const csrfHeaderName = "[[${_csrf.headerName}]]";
+// 				console.log("csrfToken22 : " + csrfToken);
+// 				console.log("csrfHeaderName22 : " + csrfHeaderName);
+				
+				$.ajax({
+					// RESTful API 형식으로 주소를 지정할 경우 삭제는 DELETE 방식의 메서드 활용하며, URL 뒤에 삭제할 번호를 경로 변수 형태로 포함
+					url: "/items/file/" + itemImgId,
+					type: "delete",
+					// data 속성에 변수값 전달 시 속성명과 변수명이 동일하면 하나만 기술해도 됨
+// 					data: {	itemImgId },
+					dataType: "json",
+					// AJAX 요청 전 먼저 CSRF 값을 서버측으로 전송
+					beforeSend: function(xhr) {
+						xhr.setRequestHeader(csrfHeaderName, csrfToken);
+					},
+					success: function(response) {
+// 						console.log("response.result : " + response.result + ", type : " + typeof(response.result));
+						if(response.result) { // 첨부파일 삭제 성공 응답 시
+							// 해당 요소를 화면에서 제거
+							const parent = elem.parentElement; // 자바스크립트
+							console.log(parent);
+							parent.remove();
+
+// 							const parent2 = $(elem).parent(); // jQuery
+// 							console.log($(parent2));
+// 							$(parent2).remove();
+						}
+					},
+					error: function() {
+						alert("삭제 요청 실패!");
+					}
+				});
 			}
 			
 		</script>
