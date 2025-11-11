@@ -130,15 +130,6 @@ public class ItemController {
 	}
 	
 	// =============================================================================
-	// "/items/xxx" 요청에 대한 상품 상세정보 조회
-	// => xxx 부분은 경로변수 itemId 로 처리
-	@DeleteMapping("/{itemId}")
-	public String itemDelete(@PathVariable("itemId") Long itemId, Model model) {
-//		log.info(">>>>>>>>>>>>>>> delete itemId : " + itemId);
-		return "/item/item_detail";
-	}
-	
-	// =============================================================================
 	// 파일 다운로드 요청에 대한 처리(상품 이미지 아이디 경로변수 처리)
 	/*
 	 * 상품 이미지 다운로드를 서버측에서 직접 처리하기 위해 리턴타입을 ResponseEntity<Resource> 타입으로 지정
@@ -238,6 +229,18 @@ public class ItemController {
 		
 		// 수정된 정보를 새로 요청하여 표시하도록 상품 상세정보 페이지로 리다이렉트(상품 아이디 경로 변수로 전달)
 		return "redirect:/items/" + itemDTO.getId();
+	}
+	
+	// =============================================================================
+	// 상품 정보 삭제 요청 - DELETE 메서드로 요청
+	@DeleteMapping("/{id}") // 수정 용도로만 사용
+	public String removeItem(@PathVariable("id") Long id) {
+		// ItemService - removeItem() 메서드 호출하여 상품 정보 수정 요청
+		// => 파라미터 : 상품아이디
+		itemService.removeItem(id);
+		
+		// 상품 목록 페이지로 리다이렉트(페이징 없음)
+		return "redirect:/items";
 	}
 	
 }

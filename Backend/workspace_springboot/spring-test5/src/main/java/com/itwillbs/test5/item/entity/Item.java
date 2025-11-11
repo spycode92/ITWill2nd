@@ -107,7 +107,7 @@ public class Item {
 	// ---------------------------------------------------------
 	// 상품 정보 수정(UPDATE)을 위한 메서드 추가 정의
 	// => 파라미터로 전달받은 ItemDTO 에 저장된 값들을 현재 엔티티 필드에 저장
-	public void changeItem(@Valid ItemDTO itemDTO) {
+	public void changeItem(ItemDTO itemDTO) {
 		this.itemNm = itemDTO.getItemNm();
 		this.itemDetail = itemDTO.getItemDetail();
 		this.price = itemDTO.getPrice();

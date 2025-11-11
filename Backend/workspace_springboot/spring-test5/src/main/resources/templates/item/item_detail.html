@@ -32,6 +32,13 @@
 				height: 100px;
 				display: block;
 			}
+			
+			/* 다운로드, 삭제 버튼 */
+			.img_btn {
+				width: 15px;
+				height: 15px;
+				vertical-align: middle;
+			}
 		</style>
 	</th:block>
 </head>	
@@ -136,7 +143,12 @@
 								<!--    => 컨트롤러에서 처리 필요! -->
 								<span th:text="${itemImgDTO.originalImgName}"></span>
 								<a th:href="@{/items/download/{id}(id=${itemImgDTO.id})}">
-									<input type="button" class="btn-download" value="다운로드">
+<!-- 									<input type="button" class="btn-download" value="다운로드"> -->
+									<img th:src="@{/images/download-icon.png}" class="img_btn" title="다운로드" />
+								</a>
+								<!-- 주의! 자바스크립트 함수 호출 시 타임리프 객체를 전달하려면 문자열 결합처럼 || 기호로 감싸야함 -->
+								<a href="javascript:void(0)" th:onclick="|deleteFile(${itemImgDTO.id})|">
+									<img th:src="@{/images/delete-icon.png}" class="img_btn" title="삭제" />
 								</a>
 							</div>
 						</td>
@@ -150,6 +162,12 @@
 						</td>
 					</tr>
 				</table>
+			</form>
+			<!-- 삭제 요청을 DELETE 방식으로 전송하기 위한 삭제 전용 폼(경로변수에 상품아이디값 전달) -->
+			<!-- 기본 폼 삭제 버튼 클릭 시 현재 폼에 대한 submit 동작 실행 -->
+			<form th:action="@{/items/{id}(id=${itemDTO.id})}" method="post" id="deleteForm">
+				<!-- 폼에서 th:action 활용하여 타임리프 형식으로 요청 전송 시 CSRF 값도 자동 포함되어 전송됨 -->
+				<input type="hidden" name="_method" value="delete">
 			</form>
 		</div>
 	</section>
@@ -247,9 +265,14 @@
 // 				const itemId = document.querySelector("#itemId").dataset.id;
 				const itemId = $("#itemId").data("id");
 				console.log("itemId333 : " + itemId);
-// 				if(confirm("상품을 삭제하시겠습니까?")) {
+				if(confirm("상품을 삭제하시겠습니까?")) {
+					// location.href 활용하여 GET 방식 기본 삭제 요청
 // 					location.href = "/items/remove?id=" + itemId;
-// 				}
+
+					// DELETE 방식 요청을 위해 삭제 전용 폼의 submit 동작 수행
+// 					$("#deleteForm").submit();
+					document.getElementById("deleteForm").submit();
+				}
 				// ---------------------------------------------
 				// AJAX 를 활용하여 삭제 요청 전송
 				// 주의! GET 방식을 제외한 나머지 방식으로 AJAX 요청 시 CSRF 토큰값이 자동으로 전송되지 않으므로 포함시켜서 요청을 수행해야한다!
@@ -261,33 +284,40 @@
 // 				const csrfToken = $("meta[name='_csrf_token']").attr("content");
 // 				const csrfHeaderName = $("meta[name='_csrf_headerName']").attr("content");
 				// 2) 서버로부터 전송되는 CSRF 토큰값 및 헤더명을 바로 가져올 경우 
-				const csrfToken = "[[${_csrf.token}]]";
-				const csrfHeaderName = "[[${_csrf.headerName}]]";
+// 				const csrfToken = "[[${_csrf.token}]]";
+// 				const csrfHeaderName = "[[${_csrf.headerName}]]";
 // 				console.log("csrfToken22 : " + csrfToken);
 // 				console.log("csrfHeaderName22 : " + csrfHeaderName);
-				$.ajax({
-					// RESTful API 형식 주소가 아닌 기본 주소 형태로 삭제 요청 전송할 경우 data 속성으로 파라미터 포함
-// 					url: "/items/removeAjax",
-// 					type: "post",
-// 					data: {
-// 						itemId
+// 				$.ajax({
+// 					// RESTful API 형식 주소가 아닌 기본 주소 형태로 삭제 요청 전송할 경우 data 속성으로 파라미터 포함
+// // 					url: "/items/removeAjax",
+// // 					type: "post",
+// // 					data: {
+// // 						itemId
+// // 					},
+// 					// RESTful API 형식으로 주소를 지정할 경우 삭제는 DELETE 방식의 메서드 활용하며, URL 뒤에 삭제할 번호를 경로 변수 형태로 포함
+// 					url: "/items/" + itemId,
+// 					type: "delete",
+// 					dataType: "json",
+// 					// AJAX 요청 전 먼저 CSRF 값을 서버측으로 전송
+// 					beforeSend: function(xhr) {
+// 						xhr.setRequestHeader(csrfHeaderName, csrfToken);
 // 					},
-					// RESTful API 형식으로 주소를 지정할 경우 삭제는 DELETE 방식의 메서드 활용하며, URL 뒤에 삭제할 번호를 경로 변수 형태로 포함
-					url: "/items/" + itemId,
-					type: "delete",
-					dataType: "json",
-					// AJAX 요청 전 먼저 CSRF 값을 서버측으로 전송
-					beforeSend: function(xhr) {
-						xhr.setRequestHeader(csrfHeaderName, csrfToken);
-					},
-					success: function(response) {
+// 					success: function(response) {
 						
-					},
-					error: function() {
-						alert("삭제 요청 실패!");
-					}
-				});
+// 					},
+// 					error: function() {
+// 						alert("삭제 요청 실패!");
+// 					}
+// 				});
 			}
+			
+			// ==========================================================
+			// 첨부파일 삭제
+			function deleteFile(itemImgId) {
+				console.log("itemImgId : " + itemImgId);
+			}
+			
 		</script>
 	</th:block>
 </body>
