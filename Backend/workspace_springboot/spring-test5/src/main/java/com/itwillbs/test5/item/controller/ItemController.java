@@ -258,8 +258,8 @@ public class ItemController {
 //		log.info(">>>>>>>> 삭제할 파일 정보 : " + itemImgDTO);
 		
 		// ItemImgService - removeItemImg() 메서드 호출하여 상품 첨부파일 1개 정보(DB) 삭제 요청
-		// => 파라미터 : 상품 이미지 파일 아이디   리턴타입 : ItemImgDTO(itemImgDTO)
-//		ItemImgDTO itemImgDTO = itemImgService.removeItemImg(itemImgId);
+		// => 파라미터 : 상품 이미지 파일 아이디
+		itemImgService.removeItemImg(itemImgId);
 		
 		Map<String, Object> resultMap = new HashMap<>();
 		resultMap.put("result", true);

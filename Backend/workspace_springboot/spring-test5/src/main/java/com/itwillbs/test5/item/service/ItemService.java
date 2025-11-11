@@ -118,8 +118,18 @@ public class ItemService {
 		Item item = itemRepository.findById(id)
 						.orElseThrow(() -> new EntityNotFoundException(id + " 번 상품이 존재하지 않습니다!"));
 		
+		// 상품 엔티티 내의 첨부파일 목록 조회하여 List<ItemImg> 객체로 리턴받기
+		List<ItemImg> itemImgList = item.getItemImgs();
+//		log.info(">>>>>>>>>>>>>> 파일명 : " + itemImgList.get(0).getImgName());
+		
+		// ItemImgService - removeItemImgs() 메서드 호출하여 복수개의 첨부파일 삭제
+		// => 파라미터 : List<ItemImg> 객체(첨부파일 목록 엔티티)
+		itemImgService.removeItemImgs(itemImgList);
+		
 		// ItemRepository - delete() 메서드를 호출하여 엔티티 삭제(또는 deleteById() 메서드에 id 를 전달하여 바로 삭제도 가능)
 		itemRepository.delete(item);
+		
+		
 	}
 	
 	

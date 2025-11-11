@@ -4,12 +4,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -22,7 +22,6 @@ import com.itwillbs.test5.item.entity.ItemImg;
 import com.itwillbs.test5.item.repository.ItemImgRepository;
 
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.transaction.Transactional;
 import lombok.extern.log4j.Log4j2;
 
 @Service
@@ -128,14 +127,32 @@ public class ItemImgService {
 	
 	// ----------------------------------------------------------------------------
 	// 상품 첨부파일 1개 엔티티 삭제
-	public ItemImgDTO removeItemImg(Long itemImgId) {
+	public void removeItemImg(Long itemImgId) {
 		ItemImg itemImg = itemImgRepository.findById(itemImgId)
 				.orElseThrow(() -> new EntityNotFoundException("해당 이미지 파일이 존재하지 않습니다!"));
 		
 		itemImgRepository.delete(itemImg);
 		
-		return ItemImgDTO.fromEntity(itemImg);
+		// FileUtils - deleteFile() 메서드 호출하여 실제 서버상에 업로드 된 파일 제거
+		// => 파라미터 : ItemImgDTO 객체
+		fileUtils.deleteFile(ItemImgDTO.fromEntity(itemImg));
 	}
+	// ----------------------------------------------------------------------------
+	// 상품 첨부파일 복수개 엔티티 삭제
+	public void removeItemImgs(List<ItemImg> itemImgList) {
+		// ItemImgRepository - deleteAll(Iterable) 메서드 호출하여 엔티티 목록(List)에 대한 전체 삭제 요청
+		itemImgRepository.deleteAll(itemImgList);
+		// -----------------------------------------------------
+//		// 상품 엔티티 삭제 전 상품 엔티티의 첨부파일 목록을 List<ItemImg> -> List<ItemImgDTO> 로 변환
+		List<ItemImgDTO> itemImgDTOList = itemImgList.stream()
+				.map(ItemImgDTO::fromEntity)
+				.collect(Collectors.toList());
+		
+		// 실제 서버상에 업로드 된 파일 목록도 삭제
+		fileUtils.deleteFiles(itemImgDTOList);
+	}
+	
+	
 	
 	
 

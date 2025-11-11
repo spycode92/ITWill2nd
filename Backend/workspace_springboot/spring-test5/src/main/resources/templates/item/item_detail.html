@@ -318,6 +318,10 @@
 			function deleteFile(elem) {
 // 				console.log(elem);
 
+				if(!confirm("해당 첨부파일을 삭제하시겠습니까?")) {
+					return;
+				}
+
 				// 하이퍼링크 요소 객체(elem)에 포함된 데이터셋 id 값(data-id) 가져오기
 				const itemImgId = elem.dataset.id;
 // 				console.log("itemImgId : " + itemImgId);
