@@ -98,7 +98,7 @@ public class ItemService {
 	// ======================================================
 	// 상품 정보 수정
 	@Transactional // 필수!
-	public void modifyItem(@Valid ItemDTO itemDTO) {
+	public void modifyItem(@Valid ItemDTO itemDTO, List<MultipartFile> itemImgFiles) throws IOException {
 		// 수정할 상품 엔티티 조회하여 Item 엔티티 타입으로 리턴받기
 		Long itemId = itemDTO.getId();
 		Item item = itemRepository.findById(itemId)
@@ -108,6 +108,10 @@ public class ItemService {
 		// 변경할 값이 저장된 객체 등을 전달받아 실제 엔티티의 필드값 변경 시
 		// 더티 체킹에 의해 자동으로 UPDATE 수행됨 => 트랜잭션 적용 필수!
 		item.changeItem(itemDTO);
+		// ----------------------------------------------------
+		// ItemImgService - registItemImg() 메서드 호출하여 상품 이미지(첨부파일) 등록 요청
+		// => 파라미터 : Item 엔티티, 첨부파일 목록 List 객체
+		itemImgService.registItemImg(item, itemImgFiles);
 	}
 	
 	// ======================================================

@@ -18,6 +18,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -102,6 +104,9 @@ public class ItemController {
 	}
 	// =============================================================================
 	// "/items"(GET) 요청에 대한 상품 목록 조회 뷰페이지 포워딩
+//	@PreAuthorize("hasRole('ROLE_ADMIN')") // 관리자 권한만 현재 메서드에 접근 가능
+	// => 단, 대부분의 권한 체크는 SecuriyConfig 클래스에서 필터링 설정으로 제어를 수행하며 @PreAuthorize 등의 어노테이션은
+	//    컨트롤러뿐만 아니라 스프링 빈으로 관리되는 객체에서 모든 메서드에 권한 체크를 가능하도록 해줌
 	@GetMapping("")
 	public String getItemListForm() {
 		// ItemService - getItemList() 메서드 호출하여 상품 목록 조회 요청
@@ -219,15 +224,16 @@ public class ItemController {
 	// 상품 정보 수정 요청 - PATCH 메서드로 요청
 //	@PutMapping("") // 엔티티가 존재할 경우 수정, 존재하지 않을 경우 삽입(추가)할 때 주로 사용
 	@PatchMapping("") // 수정 용도로만 사용
-	public String modifyItem(@ModelAttribute("itemDTO") @Valid ItemDTO itemDTO, BindingResult bindingResult) {
+	public String modifyItem(@ModelAttribute("itemDTO") @Valid ItemDTO itemDTO, BindingResult bindingResult,
+			@RequestParam("itemImgFiles") List<MultipartFile> itemImgFiles) throws IOException {
 		// 입력값 검증 오류 시 포워딩 처리
 		if(bindingResult.hasErrors()) {
 			return "/item/item_detail";
 		}
 		// -----------------------------------------
 		// ItemService - modifyItem() 메서드 호출하여 상품 정보 수정 요청
-		// => 파라미터 : 상품 정보(ItemDTO 객체)
-		itemService.modifyItem(itemDTO);
+		// => 파라미터 : 상품 정보(ItemDTO 객체), 첨부파일 정보(List<MultipartFile> 객체)
+		itemService.modifyItem(itemDTO, itemImgFiles);
 		
 		// 수정된 정보를 새로 요청하여 표시하도록 상품 상세정보 페이지로 리다이렉트(상품 아이디 경로 변수로 전달)
 		return "redirect:/items/" + itemDTO.getId();

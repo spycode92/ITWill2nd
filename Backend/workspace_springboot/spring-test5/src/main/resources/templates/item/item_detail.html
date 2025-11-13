@@ -47,7 +47,7 @@
 		<h3>상품 상세정보</h3>
 		<div id="registForm">
 			<!-- 파일 업로드를 위해 form 태그 enctype 설정 -->
-			<form th:action="@{/items}" th:object="${itemDTO}" method="post">
+			<form th:action="@{/items}" th:object="${itemDTO}" method="post" enctype="multipart/form-data">
 				<input type="hidden" th:field="*{id}" th:data-id="*{id}" id="itemId">
 				<!-- 상품 정보 수정 요청은 "/items" 에 대한 PATCH 메서드 방식으로 요청을 전송해야함 -->
 				<!-- form 태그의 method 속성은 "post" 방식으로 지정하고 폼 내부에서 히든 필드로 "_method" 속성값에 "patch" 지정하여 전송 -->
@@ -117,7 +117,7 @@
 <!-- 							<input type="file" id="custom-file-input" name="itemImgFiles" accept="image/*" multiple> -->
 <!-- 							<div id="imgPreviewArea"></div> -->
 <!-- 							<div class="error_msg" id="fileErrorDiv" th:text="${errorMessage}"></div> -->
-							<div class="itemImg" th:each="itemImgDTO : *{itemImgDTOList}">
+							<div class="itemImg oldFile" th:each="itemImgDTO : *{itemImgDTOList}">
 								<!-- 1) img 태그로 서버상의 이미지 리소스에 직접 접근 -->
 								<!-- => 클라이언트에서 정적 리소스 요청 시 기본적으로 루트(/)가 static 경로를 가리킴 -->
 <!-- 								<img th:src="@{/images/1.jpg}" width="100" height="100" /> -->
@@ -152,6 +152,11 @@
 									<img th:src="@{/images/delete-icon.png}" class="img_btn" title="삭제" />
 								</a>
 							</div>
+							<div id="uploadArea">
+								<hr>
+								<input type="file" id="custom-file-input" name="itemImgFiles" accept="image/*" multiple>
+								<div id="imgPreviewArea"></div>
+							</div>
 						</td>
 					</tr>
 					<tr>
@@ -159,7 +164,7 @@
 							<input type="submit" value="수정">
 							<input type="button" value="삭제" onclick="confirmDelete()">
 <!-- 							<input type="button" value="삭제" id="btnRemove" th:data-id="*{id}"> -->
-							<input type="button" value="취소">
+							<input type="button" value="뒤로" onclick="history.back()">
 						</td>
 					</tr>
 				</table>
@@ -176,6 +181,22 @@
 	<!-- 개별 페이지의 자바스크립트 영역 -->
 	<th:block layout:fragment="myScript">
 		<script>
+			const MAX_FILE_COUNT = 5; // 최대 업로드 가능한 첨부파일 갯수
+			let existingFileCount; // 현재까지 업로드 된 첨부파일 갯수
+			
+			function initUploadArea() {
+				// 현재까지 업로드 된 첨부파일 갯수 가져오기(클래스 선택자 itemImg 와 oldFile 이 함께 붙은 요소의 갯수)
+				existingFileCount = $(".itemImg.oldFile").length;
+// 				console.log("existingFileCount : ", existingFileCount);
+				
+				// 현재까지 업로드 된 첨부파일 갯수가 최대 첨부 가능 갯수와 같으면 첨부파일 요소 숨김 처리, 아니면 표시
+				if(existingFileCount == MAX_FILE_COUNT) {
+					$("#uploadArea").hide(); // 숨김
+				} else {
+					$("#uploadArea").show(); // 표시
+				}
+			}
+		
 			$(function() {
 				// 첨부파일 선택하지 않고 등록 요청 시 서버로부터 전달받은 오류메세지를 자바스크립트로 출력
 // 				const msg = "${errorMessage}";
@@ -190,6 +211,8 @@
 					alert(msg);
 				}
 				// =====================================================================
+				initUploadArea();
+				// =====================================================================
 				// 파일 선택 요소의 change 이벤트 핸들링
 				$("#custom-file-input").change(function(event) {
 					// 파일 선택 요소에서 선택된 파일 목록 객체 가져오기
@@ -199,13 +222,20 @@
 					// 참고) 파일 목록에서 이미지 파일들만 필터링(미리보기 대상으로 이미지 파일만 선택하기 위함)
 					let imageFiles = Array.from(files).filter(f => f.type.startsWith("image/"));
 				
+					// 새로 첨부되는 파일 갯수와 기존 업로드 파일 갯수 합산 
+					let totalFileCount = imageFiles.length + existingFileCount;
+					console.log("totalFileCount : ", totalFileCount);
+				
 					// 선택된 파일 갯수 제한(현재는 이미지 파일 목록만으로 제한)
-					// => x개를 초과하면 경고 출력 후 x개 파일을 제외한 나머지 파일 버림
-					const fileCountLimit = 5;
-					if(imageFiles.length > fileCountLimit) { // 파일 갯수가 5개보다 많을 경우
-						alert("최대 첨부 가능한 갯수 : " + fileCountLimit);
-						imageFiles = imageFiles.slice(0, fileCountLimit); // 0부터 파일 갯수만큼 남기고 버림
-						console.log(imageFiles); // 5개만 남은 목록 출력됨
+					// => x개를 초과하면 경고 출력 후 x개 파일을 제외한 나머지 파일 버림(합산한 파일 갯수와 최대 파일 갯수 상수 활용)
+					if(totalFileCount > MAX_FILE_COUNT) { // 파일 갯수가 5개보다 많을 경우
+						alert("최대 첨부 가능한 갯수 : " + MAX_FILE_COUNT + "\n초과한 파일은 버려집니다.");
+						
+						// 남은 업로드 가능 갯수 계산(최대 갯수 - 현재 업로드 된 갯수)
+						let availableFileCount = MAX_FILE_COUNT - existingFileCount;
+						
+						imageFiles = imageFiles.slice(0, availableFileCount); // 남은 업로드 가능 파일 수만큼 남기고 버림
+						console.log(imageFiles); // 남은 목록 출력됨
 					}
 					// --------------------------------------------------
 					// 미리보기1) 이미지 프리뷰 영역 초기화
@@ -354,6 +384,9 @@
 // 							const parent2 = $(elem).parent(); // jQuery
 // 							console.log($(parent2));
 // 							$(parent2).remove();
+
+							// 첨부파일 요소 영역 초기화
+							initUploadArea();
 						}
 					},
 					error: function() {

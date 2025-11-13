@@ -4,6 +4,7 @@ import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -12,6 +13,9 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity // 스프링 시큐리티 기능 설정 클래스로 지정
+// 메서드별 권한 체크를 수행하는 메서드 시큐리티(어노테이션 활용) 활성화
+// => 기본값(prePostEnabled = true) : @PreAuthrize 어노테이션 활성화
+@EnableMethodSecurity(prePostEnabled = true) 
 public class WebSecurityConfig {
 	// 시큐리티 정보 조회에 사용할 서비스 클래스 주입
 	private final CustomUserDetailsService userDetailsService;
@@ -32,7 +36,7 @@ public class WebSecurityConfig {
 				.authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
 //					.anyRequest().permitAll() // 모든 요청에 대해 접근 허용
 //					.requestMatchers("/items/**").authenticated() // "/items" 로 시작하는 하위 경로 포함 모든 경로를 제어 
-					.requestMatchers("/items/regist").authenticated() // 상품등록 경로는 로그인 한(인증된) 사용자만 접근 가능
+					.requestMatchers("/items/regist").hasAnyAuthority("ROLE_ADMIN", "ROLE_ADMIN_SUB")// 상품등록 경로는 관리자들만 접근 가능
 					.requestMatchers(HttpMethod.GET, "/items", "/items/*").permitAll() // 상품 목록, 상세정보 조회 경로(GET)는 모든 사용자가 접근 가능
 					.requestMatchers(HttpMethod.DELETE, "/items/*").hasAuthority("ROLE_ADMIN") // 상품삭제 경로(DELETE, 경로변수 포함)는 관리자만 접근 가능
 					.requestMatchers("/", "/members/regist").permitAll() // 메인페이지, 회원가입 경로는 모든 사용자가 접근 가능
