@@ -113,8 +113,8 @@ section h3 {
 							// formatter 속성 지정 시 화살표 함수를 사용하여 rowInfo 파라미터를 전달받을 경우 row 정보가 전달됨
 							// => 화살표 함수 내부에 return 문을 통해 표시할 버튼 요소를 지정(반복을 통해 버튼을 생성하여 리턴(생성))
 							formatter: (rowInfo) => {
-								console.log("----------------");
-								console.log(rowInfo);
+// 								console.log("----------------");
+// 								console.log(rowInfo);
 // 								return `<button type='button' class='btn-detail' data-row-key='${rowInfo.row.rowKey}'>상세정보</button>`;
 								return `<button type='button' class='btn-detail' data-row-key='${rowInfo.row.rowKey}'>상세정보</button><button type='button' class='btn-temp' data-row-key='${rowInfo.row.rowKey}'>임시</button>`;
 								

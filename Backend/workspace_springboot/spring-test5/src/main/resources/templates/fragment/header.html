@@ -92,6 +92,9 @@
 		let retries = 0; // 재접속 시도 횟수 카운팅
 		// 7) 사용자 로그아웃 여부 저장용 변수
 		let isLogout = false;
+		// 8) CSRF 토큰 정보 저장용 변수
+// 		const csrfToken = "[[${_csrf.token}]]";
+// 		const csrfHeaderName = "[[${_csrf.headerName}]]";
 		// -----------------------------------------------------------------------------
 		function requestLogout() {
 			if(confirm("로그아웃 하시겠습니까?")) {
@@ -109,6 +112,92 @@
 		function connectWebSocket() {
 			// 재접속 중복 요청 방지를 위해 reConnecting 변수값이 true 이면 작업 중단
 			if(reConnecting) return;
+			// 재접속 중복 요청이 아닐 경우 요청중이라는 표시를 reConnecting 변수에 설정
+			reConnecting = true;
+			// ---------------------
+			
+			/*
+			[ SockJS ]
+			- WebSocket 프로토콜이 지원되지 않는 구형 브라우저(IE 등) 등에서도 
+			  웹소켓과 동일한 인터페이스로 동작하도록 Fallback 기능 제공하는 라이브러리
+			  또한, 서버의 방화벽에 의해서도 웹소켓 관련 포트가 차단되는 경우도 있음
+			  => 이러한 상황에서 SockJS 사용할 경우 웹소켓 연결 시도 후 지원되지 않는 프로토콜이거나 포트 차단 시
+			     Fallback(차선책) 으로 다른 프로토콜로 자동으로 전환해준다!
+			- SockJS 객체를 생성하여 서버 웹소켓 연결 시 서버 엔드포인트와 연결
+			  => 이 때, 스프링 웹소켓 설정 클래스에서 엔드포인트 주소를 등록해야함
+			  
+			*/
+			// SockJS 객체 생성하여 웹소켓 연결을 수행할 엔드포인트 주소(http://localhost:8085/ws) 지정
+			let socket = new SockJS("/ws");
+			  
+			// SockJS 에 의해 선택된 웹소켓 관련 프로토콜을 STOMP 프로토콜로 매핑(= 포장)
+			stompClient = Stomp.over(socket);
+			
+			// ------------------------------
+			// 기존 구독 정보 복원
+			
+			// ------------------------------
+			// STOMP 를 활용하여 서버와 연결 시도
+			stompClient.connect(
+				// 헤더 정보 설정(객체 형식으로 설정)
+				{
+					// CSRF 토큰 정보를 헤더에 포함
+// 					csrfHeaderName: csrfToken
+					"[[${_csrf.headerName}]]" : "[[${_csrf.token}]]"
+				},
+				// 웹소켓 연결 성공 시 호출되는 콜백 함수 정의
+				function(frame) {
+// 					console.log("웹소켓 연결 성공! - ", frame);
+					
+					// 연결 완료 시 연결 상태 플래그 true 로 변경, 재접속 진행 여부 플래그 false 로 변경, 재접속 카운팅 횟수 초기화
+					isConnected = true;
+					reConnecting = false;
+					retries = 0;
+					// ------------------------------
+					// 웹소켓 연결 완료 전 이미 요청된 구독 및 메세지 전송 대기열 처리
+					
+					// ------------------------------
+					// 전역 알림(푸시)을 위한 구독 채널("/topic/noti") 구독 요청
+					subscribe("noti");
+				},
+				// 웹소켓 연결 실패 시 호출되는 콜백 함수 정의
+				function(error) {
+// 					console.log("웹소켓 연결 실패! - ", error);
+				}
+			);
+		} // 웹소켓 연결 메서드(connectWebSocket()) 끝
+		// =======================================================================================================
+		// 특정 주소(채널)를 구독하는 함수 정의
+		// => 첫번째 파라미터(id) : 구독할 주소(/topic/xxx 의 xxx 부분을 전달받음)(필수)
+		//    두번째 파라미터(callback) : 구독 요청 처리 후 호출할 콜백 함수(전달되지 않을 수 있음)
+		function subscribe(id, callback) {
+			// 아직 웹소켓 연결이 되지 않았을 경우 구독 요청 정보를 구독 요청 대기열에 추가
+			if(!isConnected) {
+				pendingSubscriptions.push({
+					id, // id: id 동일
+					callback // callback: callback 동일
+				});
+// 				console.log(pendingSubscriptions);
+				// 웹소켓 연결되기 전이므로 대기열에 추가만 하고 이후 작업 진행 중단
+				return;
+			}
+			// ------------------------------
+			// 웹소켓이 연결된 상태일 때
+			// 요청한 주소가 이미 구독중일 경우 기존 구독 채널 해제(= 중복 구독 제거 위함)
+// 			if() {
+				
+// 			}
+			
+			// 새로운 구독 정보를 생성하여 구독 요청 및 해당 구독 정보를 구독 정보 저장 객체(subscriptions)에 추가
+			// => 구독 요청을 위해 StompClient 객체의 subscribe() 메서드 호출
+			// => 기본 문법 : stompClient.subscribe("구독요청주소", 구독 요청 후 해당 주소로 메세지 전송 시 호출될 콜백 함수)
+			subscriptions[id] = stompClient.subscribe("/topic/" + id, function(result) {
+				// "/topic/xxx" 형태로 구독 요청 전송하고 서버에서 구독 처리를 수행한 이후로 수신되는 모든 메세지가 콜백 함수로 전달됨
+				console.log("구독 요청 완료!");
+				console.log(result);
+			});
+			console.log("==========>")
+			console.log(subscriptions);
 		}
 		
 	</script>

@@ -19,6 +19,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -59,10 +60,15 @@ public class ItemController {
 	
 	private final ItemService itemService;
 	private final ItemImgService itemImgService;
+	
+	// STOMP 메세지 전송을 처리할 SimpMessagingTemplate 객체 주입
+	// => 스프링 빈으로 관리되는 모든 객체에서 SimpMessagingTemplate 객체로 메세지 전송 가능
+	private final SimpMessagingTemplate messagingTemplate;
 
-	public ItemController(ItemService itemService, ItemImgService itemImgService) {
+	public ItemController(ItemService itemService, ItemImgService itemImgService, SimpMessagingTemplate messagingTemplate) {
 		this.itemService = itemService;
 		this.itemImgService = itemImgService;
+		this.messagingTemplate = messagingTemplate;
 	}
 	
 	// =============================================================================
@@ -98,6 +104,15 @@ public class ItemController {
 		//    리턴타입 : 상품번호 타입(Long)
 		Long itemId = itemService.registItem(itemDTO, itemImgFiles);
 //		log.info(">>>>>>>>>>>>>>>> itemId : " + itemId);
+		// =========================================================================
+		// SimpMessagingTemplate 객체를 사용하여 웹소켓에 연결된 클라이언트의 특정 채널에 메세지 전송
+		messagingTemplate.convertAndSend("/topic/noti", "테스트 메세지");
+		// => 여기까지 했음 DTO 정의 필요!!!!!!!!!!!!!
+		// => 여기까지 했음 DTO 정의 필요!!!!!!!!!!!!!
+		// => 여기까지 했음 DTO 정의 필요!!!!!!!!!!!!!
+		// => 여기까지 했음 DTO 정의 필요!!!!!!!!!!!!!
+		// => 여기까지 했음 DTO 정의 필요!!!!!!!!!!!!!
+		
 		
 		// =========================================================================
 		// 상품 등록 완료 시 리턴받은 상품아이디(itemId) 값을 "/items" 경로에 결합하여
