@@ -13,6 +13,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -128,11 +129,18 @@ public class ItemController {
 	// => 파라미터로 현재 페이지 번호와 페이지 크기 전달받음
 	@ResponseBody
 	@GetMapping("/itemList")
-	public List<ItemDTO> getItemList(@RequestParam(name = "page", defaultValue = "1") Integer page,
+	public Page<ItemDTO> getItemList(@RequestParam(name = "page", defaultValue = "1") Integer page,
 									@RequestParam(name = "pageSize", defaultValue = "3") Integer pageSize) {
 		// ItemService - getItemList() 메서드 호출하여 상품 목록 조회 요청
 		// => 파라미터 : 현재 페이지번호, 페이지 사이즈   리턴타입 : List<ItemDTO>
-		return itemService.getItemList(page, pageSize);
+//		Page<ItemDTO> pageItemDTO = itemService.getItemList(page, pageSize);
+//		log.info(">>>>>>>>>>>>>>>>>>> pageItemDTO : " + pageItemDTO);
+		// 단, Page 타입을 그대로 응답할 경우 데이터 전송이 정상적으로 수행되기는 하나 스프링에서 경고 메세지 출력함
+		// => Serializing PageImpl instances as-is is not supported, meaning that there is no guarantee about the stability of the resulting JSON structure!
+		
+		// 따라서, Page 타입을 포함하여 다양한 정보를 필드로 갖는 DTO 타입을 정의하여 응답데이터로 전송하면 경고 해결
+		
+		return pageItemDTO;
 	}
 	
 	// =============================================================================
