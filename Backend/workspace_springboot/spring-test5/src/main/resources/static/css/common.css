@@ -39,3 +39,44 @@ main table {
 	font-size: 12px;
 	color: RED;
 }
+
+/* 상단 알림 뱃지 */
+#alarm-wrapper {
+	position: relative;
+	display: inline-block; 
+	margin-left: 10px;
+}
+
+#alarm-image {
+	width: 25px;
+	height: 25px;
+	vertical-align: bottom;
+}
+
+#alarm-badge {
+	position: absolute;
+	bottom: 0;
+	right: 0;
+	width: 10px;
+	height: 10px;
+	background-color: red;
+	border-radius: 50%;
+	display: none;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

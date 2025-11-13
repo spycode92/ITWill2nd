@@ -54,18 +54,83 @@
 <!-- 			</form> -->
 		</li>
 	</ul>
+	<!-- 푸시(알림) 아이콘 -->
+	<div id="alarm-wrapper" sec:authorize="isAuthenticated()">
+		<img src="/images/alarm.png" id="alarm-image">
+		<span id="alarm-badge"></span>
+	</div>
 </nav>
 
 <!-- 로그인 한 사용자에게만 스크립트 로딩 -->
 <th:block sec:authorize="isAuthenticated()">
+	<!-- 웹소켓 관련 라이브러리 -->
+	<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+	
 	<script>
+		// ========================================================
+		/*
+		[ 웹소켓 설정 ]
+		모든 페이지에 공통으로 포함되는 header.html 에서 웹소켓(STOMP) 객체를 전역으로 관리
+		각 페이지의 웹소켓 연결 및 해제 등의 공통 작업 처리 담당
+		서버 또는 각 개별 페이지에서 전송되는 메세지 처리 담당
+		*/
+		// 1) STOMP 클라이언트 객체 저장용 변수 선언(=  웹소켓 통신 담당)
+		let stompClient = null;
+		// 2) STOMP 채널 구독 정보 저장용 변수
+		let subscriptions = {};
+		// 3) 웹소켓 연결 전 요청된 구독 정보, 메세지 정보들을 임시 저장할 배열(리스트)
+		let pendingSubscriptions = [];
+		let pendingMessages = [];
+		// 4) 기존 구독 정보를 저장할 배열(리스트)
+		let subscribes = [];
+		// 5) 웹소켓 연결 여부 저장용 변수(플래그)
+		let isConnected = false; // 기본값 false 로 초기화(미연결 상태)
+		// 6) 웹소켓 재연결 관련 변수
+		let reConnectInterval = 3000; // 재접속 수행 간격(3000ms = 3초)
+		let reConnecting = false; // 재접속 요청 중복 방지를 위한 플래그
+		let retries = 0; // 재접속 시도 횟수 카운팅
+		// 7) 사용자 로그아웃 여부 저장용 변수
+		let isLogout = false;
+		// -----------------------------------------------------------------------------
 		function requestLogout() {
 			if(confirm("로그아웃 하시겠습니까?")) {
 				document.querySelector("#logoutForm").submit();
+				isLogout = true;
 			}
 		}
+		// -----------------------------------------------------------------------------
+		$(function() {
+			// 페이지 로딩 시 최초 1회 웹소켓 연결 요청
+			connectWebSocket();
+		});
+		
+		// 웹소켓 연결을 수행할 메서드 정의
+		function connectWebSocket() {
+			// 재접속 중복 요청 방지를 위해 reConnecting 변수값이 true 이면 작업 중단
+			if(reConnecting) return;
+		}
+		
 	</script>
 </th:block>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
