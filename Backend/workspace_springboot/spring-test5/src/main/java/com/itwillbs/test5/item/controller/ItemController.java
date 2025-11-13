@@ -116,12 +116,23 @@ public class ItemController {
 	
 	// AJAX 활용한 상품 목록 조회 요청
 	// Toast Grid 를 사용하여 그리드 형식 목록 출력하기 위해 목록 객체를 JSON 으로 변환하여 리턴
+//	@ResponseBody
+//	@GetMapping("/itemList")
+//	public List<ItemDTO> getItemList() {
+//		// ItemService - getItemList() 메서드 호출하여 상품 목록 조회 요청
+//		// => 파라미터 : 없음   리턴타입 : List<ItemDTO>
+//		return itemService.getItemList();
+//	}
+	
+	// 스프링의 페이징 기능을 사용하여 목록 응답
+	// => 파라미터로 현재 페이지 번호와 페이지 크기 전달받음
 	@ResponseBody
 	@GetMapping("/itemList")
-	public List<ItemDTO> getItemList() {
+	public List<ItemDTO> getItemList(@RequestParam(name = "page", defaultValue = "1") Integer page,
+									@RequestParam(name = "pageSize", defaultValue = "3") Integer pageSize) {
 		// ItemService - getItemList() 메서드 호출하여 상품 목록 조회 요청
-		// => 파라미터 : 없음   리턴타입 : List<ItemDTO>
-		return itemService.getItemList();
+		// => 파라미터 : 현재 페이지번호, 페이지 사이즈   리턴타입 : List<ItemDTO>
+		return itemService.getItemList(page, pageSize);
 	}
 	
 	// =============================================================================

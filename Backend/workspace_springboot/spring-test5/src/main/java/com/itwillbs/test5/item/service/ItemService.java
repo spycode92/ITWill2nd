@@ -4,6 +4,10 @@ import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -63,6 +67,16 @@ public class ItemService {
 				.collect(Collectors.toList());
 	}
 	
+	// 상품 목록 조회 + 페이징
+	public List<ItemDTO> getItemList(Integer page, Integer pageSize) {
+		// 목록에 대한 페이징 처리를 위해 현재 페이지와 페이지 사이즈를 PageRequest.of() 메서드로 전달하여 Pageable 객체 리턴받기
+		// PageRequest.of() 메서드 파라미터
+		// 1) 페이지 번호(기본 페이지가 0부터 시작하므로 전달받은 페이지번호 - 1)
+		// 2) 페이지 크기
+		// 3) 정렬방식 => Sort.by() 메서드에 Direction.ASC 또는 DESC, 정렬할 필드명
+		Pageable pageable = PageRequest.of(page - 1, pageSize, Sort.by(Direction.DESC, "id"));
+		return null;
+	}
 	// ====================================================
 	// 상품 상세정보 조회
 	public ItemDTO getItem(Long itemId) {
@@ -135,7 +149,6 @@ public class ItemService {
 		
 		
 	}
-	
 	
 }
 
